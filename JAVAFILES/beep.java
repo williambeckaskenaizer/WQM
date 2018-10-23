@@ -14,7 +14,7 @@ public class beep{
 
 	temperature = 15.0f;
 	tds = 57f;
-	pH = 8.5f;
+	pH = 15f;
 	alkalinity = 35f;
 	phTarget = 10.3f;
 
@@ -26,15 +26,13 @@ public class beep{
 	float kw = (float)Math.pow(10,(-1*(-6.088+4471/(273+temperature)+0.01706*(273+temperature))));
 
 	ct = (float)((1+alpha1*Math.pow(10,(-pH))/k1 + alpha1*k2/alpha2/Math.pow(10, (-pH)))*((alkalinity/50000-kw/alpha1/Math.pow(10,(-pH))+Math.pow(10, (-pH))/alpha1)/(1+2*k2*alpha1/alpha2/Math.pow(10,(-pH)))));
-				//(1+gamma1*10^(-pHi)/K_1+gamma1*K_2/gamma2/10^(-pHi))*((alki/50000-Kw/gamma1/10^(-pHi)+10^(-pHi)/gamma1)/(1+2*K_2*gamma1/gamma2/10^(-pHi)))
-
 	finalAlkalinity = (float)(50000*(ct*(1+2*k2*alpha1/alpha2/Math.pow(10,(-phTarget)))/(1+alpha1*Math.pow(10,(-phTarget))/k1 +alpha1*k2/alpha2/Math.pow(10,(-phTarget)))+kw/alpha1/Math.pow(10,(-phTarget))-Math.pow(10,(-phTarget))/alpha1));
 
 	float k1pk = -Log10(k1);
 	float k2pk = -Log10(k2);
 	float kwpk = -Log10(kw);
 
-	//float h2so4 = sulfuricAcidCalc(phTarget, pH, );
+	float h2so4 = sulfuricAcidCalc(pH, phTarget, alkalinity, finalAlkalinity);
 
 	System.out.println("K1 = " + k1);
 	System.out.println("K2 = " + k2);
@@ -50,17 +48,17 @@ public class beep{
 	System.out.println("Final Alkalinity = " + finalAlkalinity);
 	System.out.println("CT = " + ct);
 
-
-	System.out.println("H2SO4 = " + "");
+	System.out.println("H2SO4 = " + h2so4);
 	}
 
 	public static float Log10(float x){
 		return (float) Math.log10(x);
 	}
-	public static float sulfuricAcidCalc(){
-		// if(pH > phTarget){
-		// 	return (49/50)*
-		// }
-		return 0.0f;
+	public static float sulfuricAcidCalc(float pH, float phTarget, float alkalinity, float finalAlkalinity){
+		if(phTarget > pH){
+			return (49/50)*(alkalinity - finalAlkalinity);
+		}else{
+			return 0.0f;
+		}
 	}
 }
