@@ -3,7 +3,7 @@ public class beep{
 	System.out.println("Testing equations in java:");
 
 	float temperature;
-	float tds; 
+	float tds;
 	float pH;
 	float alkalinity;
 	float phTarget;
@@ -55,8 +55,8 @@ public class beep{
 		return (float) Math.log10(x);
 	}
 	public static float sulfuricAcidCalc(float pH, float phTarget, float alkalinity, float finalAlkalinity){
-		if(phTarget > pH){
-			return (49/50)*(alkalinity - finalAlkalinity);
+		if(phTarget < pH){
+			return (49.0f/50.0f)*(alkalinity - finalAlkalinity);
 		}else{
 			return 0.0f;
 		}
