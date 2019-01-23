@@ -1,4 +1,4 @@
-public class beep{
+public class AcidBaseAdditionModel{
 	public static void main(String args[]){
 	System.out.println("Testing equations in java:");
 
@@ -12,9 +12,9 @@ public class beep{
 	float alpha1;
 	float alpha2;
 
-	temperature = 15.0f;
+	temperature = 10.0f;
 	tds = 57f;
-	pH = 15f;
+	pH = 8.5f;
 	alkalinity = 35f;
 	phTarget = 10.3f;
 
@@ -45,7 +45,7 @@ public class beep{
 	System.out.println("Alpha1 = " + alpha1);
 	System.out.println("Alpha2 = " + alpha2);
 
-	System.out.println("Final Alkalinity = " + finalAlkalinity);
+	System.out.println("Final Alkalinity = " + Math.round(finalAlkalinity));
 	System.out.println("CT = " + ct);
 
 	System.out.println("H2SO4 = " + h2so4);
