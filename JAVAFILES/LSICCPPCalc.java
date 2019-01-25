@@ -29,10 +29,8 @@ public static void main(String args[]){
 								float calcGamma1 = (float)Math.pow(10, calcLogGamma1);
 								float calcGamma2 = (float)Math.pow(10, calcLogGamma2);
 
-								float calcK1 = (float)Math.pow(10, (-1*(356.309-21834.4/(273+temperature)-126.834*
-																																																Math.log(273+temperature)+0.06092*(273+temperature)+1684915/(273+Math.pow(temperature,2)))));
-								float calcK2 = (float)Math.pow(10, (-1*(107.887-5151.8/(273+temperature)-38.926*
-																																																Math.log(273+temperature)+0.032528*(273+temperature)+563713.9/(273+Math.pow(temperature,2)))));
+								float calcK1 = (float)Math.pow(10, (-1*(356.309-21834.4/(273+temperature)-126.834*Math.log(273+temperature)+0.06092*(273+temperature)+1684915/(273+Math.pow(temperature,2)))));
+								float calcK2 = (float)Math.pow(10, (-1*(107.887-5151.8/(273+temperature)-38.926*Math.log(273+temperature)+0.032528*(273+temperature)+563713.9/(273+Math.pow(temperature,2)))));
 								float calcKw = (float)Math.pow(10, (-1*(-6.088+4471/(273+temperature)+0.01706*(273+temperature))));
 								float calcKso = (float)Math.pow(10,(-1*(171.9065+0.077993*(temperature+273)-2839.319/(temperature+273)-71.595*Math.log10((temperature+273)))));
 
@@ -45,12 +43,11 @@ public static void main(String args[]){
 								float calcHOnegative = calcKw/calcHpositive/(float)Math.pow(calcGamma1,2);
 
 								//float calcCtC03 = (/* h2CO3 */ + /* hCO3 */ + /* CO32 */);
-								float calcH2CO3 = (float)Math.pow(calcGamma1, 2*calcHpositive/calcK1*(alkalinity/50000-calcKw/
-																																																																														Math.pow((calcGamma1),2)/calcHpositive+calcHpositive)/(1+2*calcK2/calcGamma2/calcHpositive));
+								float calcH2CO3 = (float)Math.pow(calcGamma1, 2*calcHpositive/calcK1*(alkalinity/50000-calcKw/Math.pow((calcGamma1),2)/calcHpositive+calcHpositive)/(1+2*calcK2/calcGamma2/calcHpositive));
 								float calcHCO3 = (alkalinity/50000-calcKw/(float)Math.pow((calcGamma1), 2)/calcHpositive+calcHpositive)/(1+2*calcK2/calcGamma2/calcHpositive);
 								float calcCO32negative = calcK2/calcGamma2/calcHpositive*(alkalinity/50000-calcKw/(float)Math.pow(calcGamma1, 2)/calcHpositive+calcHpositive)/(1+2*calcK2/calcGamma2/calcHpositive);
-
-
+								float calcTotalAcidity = 2*calcH2CO3+calcHCO3+calcHpositive-calcKw/calcHpositive/(float)Math.pow(calcGamma1, 2);
+								
 
 }
 }
