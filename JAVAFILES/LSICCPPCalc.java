@@ -78,45 +78,43 @@ public static void main(String args[]){
 public static float[][] GenerateCCPPTable(){
 								System.out.println("Generating CCPP Table");
 								float[][] arr = new float[37][13];
-
 								for(int i = 0; i < arr.length; i++) {
 																for(int j = 0; j < arr[i].length; j++) {
-																								arr[i][j] = 0f;
+																								//arr[i][j] = 0f;
+																								switch(j){
+																									case 0: arr[i][j]=1.0f;
+																								}
 																}
 								}
 								System.out.println("End of Generate method");
 								return arr;
+								//create a 2D array, 13x37.
+								//Columns will be as follows:
+								/*0 - flags
+								   1 - pH
+								   2 - [H]old
+								   3 - HCO3
+								   4 - CO3
+								   5 - Ca
+								   6 - [OH]
+								   7 - F([H])
+								   8 - d[HCO3]/d[H]
+								   9 - d[CO3]/d[H]
+								   10 - d[Ca]/d[H]
+								   11 - d[OH]/d[H]
+								   12 - dF/d[H]
+								   13 - [H]new
+
+								 */
 }
 public static void DisplayArray(float[][] arr) {
 								System.out.println("\nDisplaying CCPP Array");
 								for (int i = 0; i < arr.length; i++) {
-																System.out.print("\t");
-																System.out.print("\n");
+																System.out.print("\t\n");
 																for(int j = 0; j < arr[i].length; j++){
 																	System.out.print(arr[i][j] + " ");
 																}
 								}
 								System.out.println("\nEnd of array");
 }
-
-
-//create a 2D array, 13x37.
-//Columns will be as follows:
-/*0 - flags
-   1 - pH
-   2 - [H]old
-   3 - HCO3
-   4 - CO3
-   5 - Ca
-   6 - [OH]
-   7 - F([H])
-   8 - d[HCO3]/d[H]
-   9 - d[CO3]/d[H]
-   10 - d[Ca]/d[H]
-   11 - d[OH]/d[H]
-   12 - dF/d[H]
-   13 - [H]new
-
- */
-
 }
