@@ -10,7 +10,11 @@ public static void main(String args[]){
 								float ct;
 								float alpha1;
 								float alpha2;
+								float portalCalcium;
+								float calcCalcium;
 
+								portalCalcium = 61.5f;
+								calcCalcium = portalCalcium*2.5f;
 								temperature = 10.0f;
 								tds = 57f;
 								pH = 8.5f;
@@ -40,13 +44,28 @@ public static void main(String args[]){
 								float calcpKso = (float)-Math.log(calcKso);
 
 								float calcHpositive = (float)Math.pow(10, pH)/calcGamma1;
-								float calcHOnegative = calcKw/calcHpositive/(float)Math.pow(calcGamma1,2);
+								float calcOHnegative = calcKw/calcHpositive/(float)Math.pow(calcGamma1,2);
 
-								//float calcCtC03 = (/* h2CO3 */ + /* hCO3 */ + /* CO32 */);
 								float calcH2CO3 = (float)Math.pow(calcGamma1, 2*calcHpositive/calcK1*(alkalinity/50000-calcKw/Math.pow((calcGamma1),2)/calcHpositive+calcHpositive)/(1+2*calcK2/calcGamma2/calcHpositive));
 								float calcHCO3 = (alkalinity/50000-calcKw/(float)Math.pow((calcGamma1), 2)/calcHpositive+calcHpositive)/(1+2*calcK2/calcGamma2/calcHpositive);
 								float calcCO32negative = calcK2/calcGamma2/calcHpositive*(alkalinity/50000-calcKw/(float)Math.pow(calcGamma1, 2)/calcHpositive+calcHpositive)/(1+2*calcK2/calcGamma2/calcHpositive);
 								float calcTotalAcidity = 2*calcH2CO3+calcHCO3+calcHpositive-calcKw/calcHpositive/(float)Math.pow(calcGamma1, 2);
+								float calcCtC03 = (calcH2CO3 + calcHCO3 + calcCO32negative);
+
+								float calcTotalAlk = alkalinity/50000-2*calcCalcium/100000;
+								float calcAlpha0 = calcHpositive/(calcHpositive+calcK1);
+								float calcAlpha1 = 1-calcAlpha0;
+								float calcAlpha2 = 1-calcHpositive/(calcHpositive+calcK2);
+
+								float calcAlkalinityCheck = 50000*(calcHCO3+2*calcCO32negative+calcOHnegative-calcHpositive);
+								float calcSaturationRatio = (float)Math.pow(calcGamma2, 2)*calcCalcium/2.5f/40000f*calcCO32negative/calcKso;
+
+								float calcLSI = (float)Math.log(calcSaturationRatio);
+								float calcpHs = pH-calcLSI;
+								float calcCCPP = calcCalcium-100000/* * */ /*N48*/;
+								float calcAI = pH + (float)Math.log(calcCalcium * tds);
+								float calcRI = 2*calcpHs-pH;
+
 								
 
 }
