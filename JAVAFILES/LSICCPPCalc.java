@@ -1,30 +1,37 @@
 import java.util.Arrays;
 
 public class LSICCPPCalc {
+	private static float temperature;
+	private static float tds;
+	private static float pH;
+	private static float alkalinity;
+	private static float phTarget;
+	//private static float finalAlkalinity;
+	private static float ct;
+	private static float alpha1;
+	private static float alpha2;
+	private static float portalCalcium;
+	private static float calcCalcium;
+
 public static void main(String args[]){
 
 								float[][] CCPPArr = GenerateCCPPTable();
+
 								DisplayArray(CCPPArr);
 
-								float temperature;
-								float tds;
-								float pH;
-								float alkalinity;
-								float phTarget;
-								float finalAlkalinity;
-								float ct;
-								float alpha1;
-								float alpha2;
-								float portalCalcium;
-								float calcCalcium;
-
-								portalCalcium = 61.5f;
-								pH = 8.5f; //C6
-								alkalinity = 35f; //C7
-								calcCalcium = portalCalcium*2.5f; //C8
-								tds = 57f; //C9
-								temperature = 10.0f;//C10
-								phTarget = 10.3f;
+								// portalCalcium
+								// pH //C6
+								// alkalinity  //C7
+								// calcCalcium //C8
+								// tds //C9
+								// temperature //C10
+								// phTarget = 10.3f;
+								SetTemp(18.0f);
+								SetTDS(364.0f);
+								SetPh(8.5f);
+								SetAlkalinity(190f);
+								SetPhTarget(0f);
+								//SetFinalAlkalinity()
 
 								//This next section will contain an insane number of variables. I'll do my best to keep them organized.
 								//I'll try and stick to a naming convention. "Calc" means they're from the calc page, Portal means they're from the portal page.
@@ -71,18 +78,19 @@ public static void main(String args[]){
 								float calcCCPP = calcCalcium-100000 /* * */ /*N48*/; //C48
 								float calcAI = pH + (float)Math.log(calcCalcium * tds);//C49
 								float calcRI = 2*calcpHs-pH; //C50
+}
 
-								// 37 x 13
-
+public static float formulas(){
+	return 0.0f;
 }
 public static float[][] GenerateCCPPTable(){
+								//i = 37, j = 13
 								System.out.println("Generating CCPP Table");
 								float[][] arr = new float[37][13];
+								arr[1][1] = pH;
 								for(int i = 0; i < arr.length; i++) {
 																for(int j = 0; j < arr[i].length; j++) {
-																								//arr[i][j] = 0f;
 																								switch(j){
-																									case 0: arr[i][j]=1.0f;
 																								}
 																}
 								}
@@ -116,5 +124,80 @@ public static void DisplayArray(float[][] arr) {
 																}
 								}
 								System.out.println("\nEnd of array");
+}
+public static void SetTemp(float f){
+	temperature = f;
+}
+public static float GetTemp(){
+	return temperature;
+}
+
+public static void SetPh(float f){
+	pH = f;
+}
+public static float GetpH(){
+	return pH;
+}
+
+public static void SetTDS(float f){
+	tds = f;
+}
+public static float GetTDS(){
+	return tds;
+}
+
+public static void SetAlkalinity(float f){
+	alkalinity = f;
+}
+public static float GetAlkalinity(){
+	return alkalinity;
+}
+
+public static void SetPhTarget(float f){
+	phTarget = f;
+}
+public static float GetPhTarget(){
+	return phTarget;
+}
+
+public static void SetFinalAlkalinity(float f){
+	finalAlkalinity = f;
+}
+public static float GetFinalAlkalinity(){
+	return finalAlkalinity;
+}
+
+public static void SetCT(float f){
+	ct = f;
+}
+public static float GetCT(){
+	return ct;
+}
+
+public static void SetAlpha1(float f){
+	alpha1 = f;
+}
+public static float GetAlpha1(){
+	return alpha1;
+}
+
+public static void SetAlpha2(float f){
+	alpha2 = f;
+}
+public static float GetAlpha2(){
+	return alpha2;
+}
+
+public static void SetPortalCalcium(float f){
+	portalCalcium = f;
+}
+public static float GetPortalCalcium(){
+	return portalCalcium;
+}
+public static void SetCalcCalcium(){
+	calcCalcium = GetPortalCalcium()*2.5f;
+}
+public static float GetCalcCalcium(){
+	return calcCalcium;
 }
 }
