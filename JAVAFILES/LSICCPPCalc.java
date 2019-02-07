@@ -25,8 +25,8 @@ public static void main(String args[]){
 								float[][] CCPPArr = GenerateCCPPTable(37, 13);
 
 								//populate columns
-								PopulatePhColumn(CCPPArr);
-								PopulateHOldColumn(CCPPArr);
+								// PopulatePhColumn(CCPPArr);
+								// PopulateHOldColumn(CCPPArr);
 
 
 								//display (for debugging purposes)
