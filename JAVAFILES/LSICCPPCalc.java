@@ -78,24 +78,28 @@ public static float[][] GenerateCCPPTable(int rows, int columns){
 								 */
 }
 
-public static void PopulatePhColumn(float[][] arr){
-								SetPhColumn(1);
-								arr[0][phColumn] = GetPh();
-								for(int i = 1; i < arr.length; i++) {
-																arr[i][phColumn] = (float)-Math.log10(3.48317e-8f*GetFormula("calcGamma1"));
-								}
+public static float Newton(float xn, float fx){
+	return 0.0f;
 }
-public static void PopulateHOldColumn(float[][] arr){
-								SetHOldColumn(2);
-								arr[0][hOldColumn] = (float)Math.pow(10, (-arr[0][phColumn]))/ GetFormula("calcGamma1");
-								for(int i = 1; i < arr.length; i++) {
-																arr[i][hOldColumn] = (float)Math.pow(10, (-arr[i][phColumn]))/GetFormula("calcGamma1");
-								}
-}
-public static void PopulateHCO3Column(float[][] arr){
-	SetHCO3Column(3);
-	arr[0][HCO3Column]
-}
+
+// public static void PopulatePhColumn(float[][] arr){
+// 								SetPhColumn(1);
+// 								arr[0][phColumn] = GetPh();
+// 								for(int i = 1; i < arr.length; i++) {
+// 																arr[i][phColumn] = (float)-Math.log10(3.48317e-8f*GetFormula("calcGamma1"));
+// 								}
+// }
+// public static void PopulateHOldColumn(float[][] arr){
+// 								SetHOldColumn(2);
+// 								arr[0][hOldColumn] = (float)Math.pow(10, (-arr[0][phColumn]))/ GetFormula("calcGamma1");
+// 								for(int i = 1; i < arr.length; i++) {
+// 																arr[i][hOldColumn] = (float)Math.pow(10, (-arr[i][phColumn]))/GetFormula("calcGamma1");
+// 								}
+// }
+// public static void PopulateHCO3Column(float[][] arr){
+// 	SetHCO3Column(3);
+// 	arr[0][HCO3Column]
+// }
 
 public static void DisplayArray(float[][] arr) {
 								System.out.println("\nDisplaying CCPP Table");
