@@ -20,97 +20,54 @@ private static int phColumn;
 private static int hOldColumn;
 private static int HCO3Column;
 
+private static double tolerance;
+private static int numRecurrance;
+
 public static void main(String args[]){
-								//create array
-								float[][] CCPPArr = GenerateCCPPTable(37, 13);
-
-								//populate columns
-								// PopulatePhColumn(CCPPArr);
-								// PopulateHOldColumn(CCPPArr);
-
-
-								//display (for debugging purposes)
-								DisplayArray(CCPPArr);
-
-								// portalCalcium
-								// pH //C6
-								// alkalinity  //C7
-								// calcCalcium //C8
-								// tds //C9
-								// temperature //C10
-								// phTarget = 10.3f;
-								//SetFinalAlkalinity()
-								//SetCT()
-
-
-}
-public static float[][] GenerateCCPPTable(int rows, int columns){
-								SetTemp(18.0f);
-								SetTDS(364.0f);
-								SetPh(8.08f);
-								SetAlkalinity(190f);
-								SetPhTarget(0f);
-								SetPortalCalcium(61.2f);
-
-
-								//i = 37, j = 13
-								System.out.println("Generating CCPP Table");
-								float[][] arr = new float[rows][columns];
-								System.out.println("End of Generate method");
-								return arr;
-								//create a 2D array, 13x37.
-								//Columns will be as follows:
-								/*0 - flags
-								   1 - pH
-								   2 - [H]old
-								   3 - HCO3
-								   4 - CO3
-								   5 - Ca
-								   6 - [OH]
-								   7 - F([H])
-								   8 - d[HCO3]/d[H]
-								   9 - d[CO3]/d[H]
-								   10 - d[Ca]/d[H]
-								   11 - d[OH]/d[H]
-								   12 - dF/d[H]
-								   13 - [H]new
-
-								 */
+	SetTolerance(.0000000000001);
+	SetNumRecurrance(37);
+	Newton(0.0f);
 }
 
-public static float Newton(float xn, float fx){
+public static float Newton(float x){
+	for(int i = 1; Math.abs(f(x)) > GetTolerance() && i < GetNumRecurrance(); i++){
+		x = x-f(x)/fPrime(x);
+		System.out.println("Step " + i + " x: " + x + " Value: " + f(x));
+	}
+	if(Math.abs(f(x)) <= tolerance){
+		System.out.println("Zero found at " + x);
+	}else{
+		System.out.println("Failed to find zero within " + numRecurrance + " iterations");
+	}
 	return 0.0f;
 }
 
-// public static void PopulatePhColumn(float[][] arr){
-// 								SetPhColumn(1);
-// 								arr[0][phColumn] = GetPh();
-// 								for(int i = 1; i < arr.length; i++) {
-// 																arr[i][phColumn] = (float)-Math.log10(3.48317e-8f*GetFormula("calcGamma1"));
-// 								}
-// }
-// public static void PopulateHOldColumn(float[][] arr){
-// 								SetHOldColumn(2);
-// 								arr[0][hOldColumn] = (float)Math.pow(10, (-arr[0][phColumn]))/ GetFormula("calcGamma1");
-// 								for(int i = 1; i < arr.length; i++) {
-// 																arr[i][hOldColumn] = (float)Math.pow(10, (-arr[i][phColumn]))/GetFormula("calcGamma1");
-// 								}
-// }
-// public static void PopulateHCO3Column(float[][] arr){
-// 	SetHCO3Column(3);
-// 	arr[0][HCO3Column]
-// }
-
-public static void DisplayArray(float[][] arr) {
-								System.out.println("\nDisplaying CCPP Table");
-								for (int i = 0; i < arr.length; i++) {
-																System.out.print("\t\n");
-																for(int j = 0; j < arr[i].length; j++) {
-																								System.out.print(arr[i][j] + " ");
-																}
-								}
-								System.out.println("\n\nEnd of array");
+static float f(float x){
+	return (float)Math.sin(x);
 }
+
+static float fPrime(float x){
+	return (float)Math.centered(x);
+}
+
+public static void SetTolerance(double f){
+	tolerance = f;
+}
+
+static double GetTolerance(){
+	return tolerance;
+}
+
+static void SetNumRecurrance(int n){
+	numRecurrance = n;
+}
+
+static float GetNumRecurrance(){
+	return numRecurrance;
+}
+
+
+
 public static void SetTemp(float f){
 								temperature = f;
 }
