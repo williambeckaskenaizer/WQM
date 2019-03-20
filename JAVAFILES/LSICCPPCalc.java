@@ -26,28 +26,46 @@ private static int numRecurrance;
 public static void main(String args[]){
 	SetTolerance(.0000000000001);
 	SetNumRecurrance(37);
-	Newton(0.0f);
+	Newton(GetFormula("calcHCO3"));
 }
 
 public static float Newton(float x){
-	for(int i = 1; Math.abs(f(x)) > GetTolerance() && i < GetNumRecurrance(); i++){
-		x = x-f(x)/fPrime(x);
-		System.out.println("Step " + i + " x: " + x + " Value: " + f(x));
-	}
-	if(Math.abs(f(x)) <= tolerance){
-		System.out.println("Zero found at " + x);
-	}else{
-		System.out.println("Failed to find zero within " + numRecurrance + " iterations");
-	}
-	return 0.0f;
+	// for(int i = 1; Math.abs(f(x)) > GetTolerance() && i < GetNumRecurrance(); i++){
+	// 	x = x-f(x)/fPrime(x);
+	// 	System.out.println("Step " + i + " x: " + x + " Value: " + f(x));
+	// }
+	// if(Math.abs(f(x)) <= tolerance){
+	// 	System.out.println("Zero found at " + x);
+	// }else{
+	// 	System.out.println("Failed to find zero within " + numRecurrance + " iterations");
+	// }
+	// return 0.0f;
+	float del = (float)1e-5,xx = 0 ;
+ 	float dx =0/*, x=Math.PI/2*/;
+	int k = 0;
+	while ((float)Math.abs(xx-x) > del && k<10 && f(x)!=0) {
+		dx = f(x)/fPrime(x);
+		xx=x;
+		x = x - dx;
+		k++;
+
+System.out.println("Iteration number: " + k);
+System.out.println("Root obtained: " + x);
+System.out.println("Estimated error: " + Math.abs(xx-x));
+
+}
+return x;
 }
 
 static float f(float x){
 	return (float)Math.sin(x);
 }
 
-static float fPrime(float x){
-	return (float)Math.centered(x);
+static float fPrime(float x ){
+	//function to take the derivative required for Newton's method
+	return 1.0f/2f*x-(float)(x*Math.cos(x)+(float)Math.sin(x))+(float)Math.sin(2f*x);
+
+	//return 0.0;
 }
 
 public static void SetTolerance(double f){
@@ -193,9 +211,12 @@ public static float GetFormula(String formId){
 
 								float calcH2CO3 = (float)Math.pow(calcGamma1, 2f*calcHpositive/calcK1*(alkalinity/50000f-calcKw/Math.pow((calcGamma1),2)/calcHpositive+calcHpositive)/(1f+2f*calcK2/calcGamma2/calcHpositive)); //C33
 								float calcHCO3 = (alkalinity/50000f-calcKw/(float)Math.pow((calcGamma1), 2)/calcHpositive+calcHpositive)/(1f+2f*calcK2/calcGamma2/calcHpositive); //C34
+								System.out.println(calcHCO3);
 								float calcCO32negative = calcK2/calcGamma2/calcHpositive*(alkalinity/50000-calcKw/(float)Math.pow(calcGamma1, 2)/calcHpositive+calcHpositive)/(1f+2f*calcK2/calcGamma2/calcHpositive); //C35
 								float calcTotalAcidity = 2*calcH2CO3+calcHCO3+calcHpositive-calcKw/calcHpositive/(float)Math.pow(calcGamma1, 2); //C36
-								float calcCtC03 = (calcH2CO3 + calcHCO3 + calcCO32negative); //C32
+								System.out.println(calcTotalAcidity);
+								float calcCtCO3 = (calcH2CO3 + calcHCO3 + calcCO32negative); //C32
+								System.out.println(calcCtCO3);
 
 								float calcTotalAlk = alkalinity/50000f-2f*calcCalcium/100000f; //C37
 								float calcAlpha0 = calcHpositive/(calcHpositive+calcK1); //C39
@@ -228,6 +249,7 @@ public static float GetFormula(String formId){
 								case "calcpKw": return calcpKw;
 								case "calcpKso": return calcpKso;
 								case "calcHpositive": return calcHpositive;
+								case "calcHC03": return calcHCO3;
 								default: return 0.0f;
 								}
 }
