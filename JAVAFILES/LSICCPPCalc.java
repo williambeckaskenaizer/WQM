@@ -1,35 +1,40 @@
 import java.util.Arrays;
+import java.math.*;
 
 public class LSICCPPCalc {
 
 //Chemistry Values
-private static float temperature;
-private static float tds;
-private static float pH;
-private static float alkalinity;
-private static float phTarget;
-private static float finalAlkalinity;
-private static float ct;
-private static float alpha1;
-private static float alpha2;
-private static float portalCalcium;
-private static float calcCalcium;
+private static double temperature;
+private static double tds;
+private static double pH;
+private static double alkalinity;
+private static double phTarget;
+private static double finalAlkalinity;
+private static double ct;
+private static double alpha1;
+private static double alpha2;
+private static double portalCalcium;
+private static double calcCalcium;
 
 //Other variables
-private static int phColumn;
-private static int hOldColumn;
-private static int HCO3Column;
-
 private static double tolerance;
 private static int numRecurrance;
 
 public static void main(String args[]){
+	//initialize manual entry table
+	SetPh(8.08f);
+	SetAlkalinity(190.f);
+	SetPortalCalcium(61.2f);
+	SetTDS(364.f);
+	SetTemp(18.f);
 	SetTolerance(.0000000000001);
 	SetNumRecurrance(37);
-	Newton(GetFormula("calcHCO3"));
+	System.out.println("running newton on calchco3: " +Newton(GetFormula("calcHCO3")));
+
+
 }
 
-public static float Newton(float x){
+public static double Newton(double x){
 	// for(int i = 1; Math.abs(f(x)) > GetTolerance() && i < GetNumRecurrance(); i++){
 	// 	x = x-f(x)/fPrime(x);
 	// 	System.out.println("Step " + i + " x: " + x + " Value: " + f(x));
@@ -40,10 +45,10 @@ public static float Newton(float x){
 	// 	System.out.println("Failed to find zero within " + numRecurrance + " iterations");
 	// }
 	// return 0.0f;
-	float del = (float)1e-5,xx = 0 ;
- 	float dx =0/*, x=Math.PI/2*/;
+	double del = 1e-5,xx = 0 ;
+ 	double dx =0/*, x=Math.PI/2*/;
 	int k = 0;
-	while ((float)Math.abs(xx-x) > del && k<10 && f(x)!=0) {
+	while (Math.abs(xx-x) > del && k<10 && f(x)!=0) {
 		dx = f(x)/fPrime(x);
 		xx=x;
 		x = x - dx;
@@ -57,13 +62,13 @@ System.out.println("Estimated error: " + Math.abs(xx-x));
 return x;
 }
 
-static float f(float x){
-	return (float)Math.sin(x);
+static double f(double x){
+	return Math.sin(x);
 }
 
-static float fPrime(float x ){
+static double fPrime(double x ){
 	//function to take the derivative required for Newton's method
-	return 1.0f/2f*x-(float)(x*Math.cos(x)+(float)Math.sin(x))+(float)Math.sin(2f*x);
+	return 1.0f/2f*x-(x*Math.cos(x)+Math.sin(x))+Math.sin(2f*x);
 
 	//return 0.0;
 }
@@ -80,157 +85,158 @@ static void SetNumRecurrance(int n){
 	numRecurrance = n;
 }
 
-static float GetNumRecurrance(){
+static double GetNumRecurrance(){
 	return numRecurrance;
 }
 
 
 
-public static void SetTemp(float f){
+public static void SetTemp(double f){
 								temperature = f;
 }
-public static float GetTemp(){
+public static double GetTemp(){
 								return temperature;
 }
 
-public static void SetPh(float f){
+public static void SetPh(double f){
 								pH = f;
 }
-public static float GetPh(){
+public static double GetPh(){
 								return pH;
 }
 
-public static void SetTDS(float f){
+public static void SetTDS(double f){
 								tds = f;
 }
-public static float GetTDS(){
+public static double GetTDS(){
 								return tds;
 }
 
-public static void SetAlkalinity(float f){
+public static void SetAlkalinity(double f){
 								alkalinity = f;
 }
-public static float GetAlkalinity(){
+public static double GetAlkalinity(){
 								return alkalinity;
 }
 
-public static void SetPhTarget(float f){
+public static void SetPhTarget(double f){
 								phTarget = f;
 }
-public static float GetPhTarget(){
+public static double GetPhTarget(){
 								return phTarget;
 }
 
-public static void SetFinalAlkalinity(float f){
+public static void SetFinalAlkalinity(double f){
 								finalAlkalinity = f;
 }
-public static float GetFinalAlkalinity(){
+public static double GetFinalAlkalinity(){
 								return finalAlkalinity;
 }
 
-public static void SetCT(float f){
+public static void SetCT(double f){
 								ct = f;
 }
-public static float GetCT(){
+public static double GetCT(){
 								return ct;
 }
 
-public static void SetAlpha1(float f){
+public static void SetAlpha1(double f){
 								alpha1 = f;
 }
-public static float GetAlpha1(){
+public static double GetAlpha1(){
 								return alpha1;
 }
 
-public static void SetAlpha2(float f){
+public static void SetAlpha2(double f){
 								alpha2 = f;
 }
-public static float GetAlpha2(){
+public static double GetAlpha2(){
 								return alpha2;
 }
 
-public static void SetPortalCalcium(float f){
+public static void SetPortalCalcium(double f){
 								portalCalcium = f;
 }
-public static float GetPortalCalcium(){
+public static double GetPortalCalcium(){
 								return portalCalcium;
 }
 public static void SetCalcCalcium(){
 								calcCalcium = GetPortalCalcium()*2.5f;
 }
-public static float GetCalcCalcium(){
+public static double GetCalcCalcium(){
 								return calcCalcium;
-}
-
-//Methods to set columns
-
-public static void SetPhColumn(int n){
-								phColumn = n;
-}
-
-public static void SetHOldColumn(int n){
-								hOldColumn = n;
-}
-
-public static void SetHCO3Column(int n){
-								HCO3Column = n;
 }
 
 //Print method
 
-public static void print(float f){
+public static void print(double f){
 								System.out.println(f);
 }
-public static float GetFormula(String formId){
+public static double GetFormula(String formId){
 
 								//This next section will contain an insane number of variables. I'll do my best to keep them organized.
 								//I'll try and stick to a naming convention. "Calc" means they're from the calc page, Portal means they're from the portal page.
 
-								float calcI = tds*0.000025f; //C12
-								float calcE = 60954f/(temperature + 273.15f+116f)-68.937f; //C13
-								float calcA = 1820000f*(float)Math.pow((calcE*(temperature+273.15f)),(-1.5f)); //C14
+								//rounding example
+								//Math.round(value * 100000d) / 100000d
 
-								float calcLogGamma1 = -1.0f*calcA*(float)Math.pow(1f,2f)*((float)Math.sqrt(calcI)/(1f+(float)Math.sqrt(calcI)))-0.3f*calcI;  //C15
-								float calcLogGamma2 = -1.0f*calcA*(float)Math.pow(2f, 2f)*((float)Math.sqrt(calcI)/(1f+(float)Math.sqrt(calcI))-0.3f*calcI); //C16
 
-								float calcGamma1 = (float)Math.pow(10, calcLogGamma1); //C18
-								float calcGamma2 = (float)Math.pow(10, calcLogGamma2); //C19
+								double calcI = Math.round(tds*0.000025f * 10000d)/10000d; //C12
+								System.out.println("calcI is "+ calcI);
+								double calcE = 60954f/(temperature + 273.15f+116f)-68.937f; //C13
+								System.out.println("calcE is " + calcE);
+								double calcA = 1820000f*Math.pow((calcE*(temperature+273.15f)),(-1.5f)); //C14
+								System.out.println("CalcA is " + Math.round(calcA * 1000000000d)/1000000000d);
 
-								float calcK1 = (float)Math.pow(10, (-1f*(356.309-21834.4/(273+temperature)-126.834*Math.log(273+temperature)+0.06092*(273f+temperature)+1684915/(273f+Math.pow(temperature,2))))); //C20
-								float calcK2 = (float)Math.pow(10, (-1f*(107.887-5151.8/(273+temperature)-38.926*Math.log(273+temperature)+0.032528*(273f+temperature)+563713.9/(273f+Math.pow(temperature,2))))); //C21
-								float calcKw = (float)Math.pow(10, (-1f*(-6.088+4471/(273+temperature)+0.01706*(273+temperature)))); //C22
-								float calcKso = (float)Math.pow(10,(-1f*(171.9065+0.077993*(temperature+273f)-2839.319/(temperature+273f)-71.595*Math.log10((temperature+273f))))); //C23
+								double calcLogGamma1 = -1.0f*calcA*Math.pow(1f,2f)*(Math.sqrt(calcI)/(1f+Math.sqrt(calcI)))-0.3f*calcI;  //C15
+								System.out.println("calcloggamma1 is "+Math.round(calcLogGamma1 * 1000000000d)/1000000000d);
+								double calcLogGamma2 = -1.0f*calcA*Math.pow(2f, 2f)*(Math.sqrt(calcI)/(1f+Math.sqrt(calcI))-0.3f*calcI); //C16
 
-								float calcpK1 = (float)-Math.log(calcK1); //C24
-								float calcpK2 = (float)-Math.log(calcK2); //C25
-								float calcpKw = (float)-Math.log(calcKw); //C26
-								float calcpKso = (float)-Math.log(calcKso); //C27
+								//Rounding test for calcGamma
 
-								float calcHpositive = (float)Math.pow(10, pH)/calcGamma1; //C28
-								float calcOHnegative = calcKw/calcHpositive/(float)Math.pow(calcGamma1,2); //C29
 
-								float calcH2CO3 = (float)Math.pow(calcGamma1, 2f*calcHpositive/calcK1*(alkalinity/50000f-calcKw/Math.pow((calcGamma1),2)/calcHpositive+calcHpositive)/(1f+2f*calcK2/calcGamma2/calcHpositive)); //C33
-								float calcHCO3 = (alkalinity/50000f-calcKw/(float)Math.pow((calcGamma1), 2)/calcHpositive+calcHpositive)/(1f+2f*calcK2/calcGamma2/calcHpositive); //C34
-								System.out.println(calcHCO3);
-								float calcCO32negative = calcK2/calcGamma2/calcHpositive*(alkalinity/50000-calcKw/(float)Math.pow(calcGamma1, 2)/calcHpositive+calcHpositive)/(1f+2f*calcK2/calcGamma2/calcHpositive); //C35
-								float calcTotalAcidity = 2*calcH2CO3+calcHCO3+calcHpositive-calcKw/calcHpositive/(float)Math.pow(calcGamma1, 2); //C36
-								System.out.println(calcTotalAcidity);
-								float calcCtCO3 = (calcH2CO3 + calcHCO3 + calcCO32negative); //C32
-								System.out.println(calcCtCO3);
+								double calcGamma1 = Math.round(Math.pow(10, calcLogGamma1)*10000d)/10000d; //C18
+								System.out.println("calcGamma1 is "+ calcGamma1);
+								double calcGamma2 = Math.pow(10, calcLogGamma2); //C19
 
-								float calcTotalAlk = alkalinity/50000f-2f*calcCalcium/100000f; //C37
-								float calcAlpha0 = calcHpositive/(calcHpositive+calcK1); //C39
-								float calcAlpha1 = 1f-calcAlpha0; //C40
-								float calcAlpha2 = 1f-calcHpositive/(calcHpositive+calcK2);//C41
+								double calcK1 = Math.pow(10f, (-1f*(356.309-21834.4/(273f+GetTemp())-126.834*Math.log10(273f+GetTemp())+0.06092*(273f+GetTemp())+1684915f/Math.pow(273f+GetTemp(),2)))); //C20
+								double calcK2 = Math.pow(10, (-1f*(107.887-5151.8/(273+temperature)-38.926*Math.log(273+temperature)+0.032528*(273f+temperature)+563713.9/(273f+Math.pow(temperature,2))))); //C21
+								double calcKw = Math.pow(10, (-1f*(-6.088+4471/(273+temperature)+0.01706*(273+temperature)))); //C22
+								double calcKso = Math.pow(10,(-1f*(171.9065+0.077993*(temperature+273f)-2839.319/(temperature+273f)-71.595*Math.log10((temperature+273f))))); //C23
 
-								float calcAlkalinityCheck = 50000f*(calcHCO3+2f*calcCO32negative+calcOHnegative-calcHpositive); //C43
-								float calcSaturationRatio = (float)Math.pow(calcGamma2, 2)*calcCalcium/2.5f/40000f*calcCO32negative/calcKso; //C44
 
-								float calcLSI = (float)Math.log(calcSaturationRatio); //C46
-								float calcpHs = pH-calcLSI; //C47
-								float calcCCPP = calcCalcium-100000f /* * */ /*N48*/; //C48
-								float calcAI = pH + (float)Math.log(calcCalcium * tds);//C49
-								float calcRI = 2*calcpHs-pH; //C50
+								double calcpK1 = -Math.log10(calcK1); //C24
+								double calcpK2 = -Math.log10(calcK2); //C25
+								double calcpKw = -Math.log10(calcKw); //C26
+								double calcpKso = -Math.log10(calcKso); //C27
+
+								double calcHpositive = Math.pow(10, pH*-1)/calcGamma1; //C28
+								double calcOHnegative = calcKw/calcHpositive/Math.pow(calcGamma1,2); //C29
+								System.out.println("calchpositive "+calcHpositive);
+								System.out.println("calcOHnegative is "+ calcOHnegative);
+
+								double calcH2CO3 = Math.pow(calcGamma1, 2f*calcHpositive/calcK1*(alkalinity/50000f-calcKw/Math.pow((calcGamma1),2)/calcHpositive+calcHpositive)/(1f+2f*calcK2/calcGamma2/calcHpositive)); //C33
+								double calcHCO3 = (alkalinity/50000f-calcKw/Math.pow((calcGamma1), 2)/calcHpositive+calcHpositive)/(1f+2f*calcK2/calcGamma2/calcHpositive); //C34
+								System.out.println("calchco3 " + calcHCO3);
+								double calcCO32negative = calcK2/calcGamma2/calcHpositive*(alkalinity/50000-calcKw/Math.pow(calcGamma1, 2)/calcHpositive+calcHpositive)/(1f+2f*calcK2/calcGamma2/calcHpositive); //C35
+								double calcTotalAcidity = 2*calcH2CO3+calcHCO3+calcHpositive-calcKw/calcHpositive/Math.pow(calcGamma1, 2); //C36
+								System.out.println("calctotalalkalinity "+calcTotalAcidity);
+								double calcCtCO3 = (calcH2CO3 + calcHCO3 + calcCO32negative); //C32
+								System.out.println("calcctco3 is"+ calcCtCO3);
+
+								double calcTotalAlk = alkalinity/50000f-2f*calcCalcium/100000f; //C37
+								double calcAlpha0 = calcHpositive/(calcHpositive+calcK1); //C39
+								double calcAlpha1 = 1f-calcAlpha0; //C40
+								double calcAlpha2 = 1f-calcHpositive/(calcHpositive+calcK2);//C41
+
+								double calcAlkalinityCheck = 50000f*(calcHCO3+2f*calcCO32negative+calcOHnegative-calcHpositive); //C43
+								double calcSaturationRatio = Math.pow(calcGamma2, 2)*calcCalcium/2.5f/40000f*calcCO32negative/calcKso; //C44
+
+								double calcLSI = Math.log(calcSaturationRatio); //C46
+								double calcpHs = pH-calcLSI; //C47
+								double calcCCPP = calcCalcium-100000f /* * */ /*N48*/; //C48
+								double calcAI = pH + Math.log(calcCalcium * tds);//C49
+								double calcRI = 2*calcpHs-pH; //C50
 
 								switch(formId) {
 								case "calcI": return calcI;
