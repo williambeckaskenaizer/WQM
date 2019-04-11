@@ -29,48 +29,141 @@ public static void main(String args[]){
 	SetTemp(18.f);
 	SetTolerance(.0000000000001);
 	SetNumRecurrance(37);
-	System.out.println("running newton on calchco3: " +Newton(GetFormula("calcHCO3")));
 
-
+	System.out.println(CCPPpH(12));
+	System.out.println(CCPPhOld(12));
+	System.out.println(CCPPHCO3(12));
 }
 
-public static double Newton(double x){
-	// for(int i = 1; Math.abs(f(x)) > GetTolerance() && i < GetNumRecurrance(); i++){
-	// 	x = x-f(x)/fPrime(x);
-	// 	System.out.println("Step " + i + " x: " + x + " Value: " + f(x));
-	// }
-	// if(Math.abs(f(x)) <= tolerance){
-	// 	System.out.println("Zero found at " + x);
-	// }else{
-	// 	System.out.println("Failed to find zero within " + numRecurrance + " iterations");
-	// }
-	// return 0.0f;
-	double del = 1e-5,xx = 0 ;
- 	double dx =0/*, x=Math.PI/2*/;
-	int k = 0;
-	while (Math.abs(xx-x) > del && k<10 && f(x)!=0) {
-		dx = f(x)/fPrime(x);
-		xx=x;
-		x = x - dx;
-		k++;
+//CCPP CALCULATION FORMULAS
 
-System.out.println("Iteration number: " + k);
-System.out.println("Root obtained: " + x);
-System.out.println("Estimated error: " + Math.abs(xx-x));
-
+public static double CCPPpH(int index){
+	//FORM: -LOG(V12-47*C18)
+	double x = 0;
+	if(index == 0){
+		for(int i = 0; i < 37; i++){
+			x = -(Math.log10(/* Vx */10 * GetFormula("calcGamma1")));
+		}
+	}else{
+			for(int i = 0; i < index; i++){
+				x = -(Math.log10(/* Vx */10 * GetFormula("calcGamma1")));
+			}
+		}
+	return x;
 }
-return x;
+public static double CCPPhOld(int index){
+	//FORM: (10^(-J12-49))/C18
+	double x = 0;
+	if(index == 0){
+		for(int i = 0; i < 37; i++){
+			x = (Math.pow(10, /* Jx */ 10)/GetFormula("calcGamma1"));
+		}
+		}else{
+			for(int i = 0; i < index; i++){
+				x = (Math.pow(10, /* Jx */ 10)/GetFormula("calcGamma1"));
+			}
+		}
+
+	return x;
 }
 
-static double f(double x){
-	return Math.sin(x);
+public static double CCPPHCO3(int index){
+	//FORM: (C36 + C22 / C18^2 / K12-49 - K12-49)/(1 + 2^C18^2/C20*K12-49) ... oof
+	double x = 0;
+	if(index == 0){
+		for(int i = 0; i < 37; i++){
+			x = (GetFormula("calcTotalAcidity") + GetFormula("calcKw")/Math.pow(GetFormula("calcGamma1"), 2)/ /*Kx*/ CCPPhOld(i) - CCPPhOld(i)/(1 + Math.pow(2, Math.pow(GetFormula("calcGamma1"), 2 )/GetFormula("calcK1")*CCPPhOld(i))));
+		}
+	}else{
+		for(int i = 0; i < index; i++){
+			x = (GetFormula("calcTotalAcidity") + GetFormula("calcKw")/Math.pow(GetFormula("calcGamma1"), 2)/ /*Kx*/ CCPPhOld(i) - CCPPhOld(i)/(1 + Math.pow(2, Math.pow(GetFormula("calcGamma1"), 2 )/GetFormula("calcK1")*CCPPhOld(i))));
+		}
+	}
+	return x;
 }
-
-static double fPrime(double x ){
-	//function to take the derivative required for Newton's method
-	return 1.0f/2f*x-(x*Math.cos(x)+Math.sin(x))+Math.sin(2f*x);
-
-	//return 0.0;
+public static double CCPPCO3(int index){
+	//FORM: $C$21/$C$19*L12-49/K12-49
+	double x = 0;
+	if(index == 0){
+	for(int i = 0; i < 37; i++){
+		x = (GetFormula("calcK2")/GetFormula("calcGamma2"))*( /*Lx/Kx*/CCPPhOld(i));
+	}
+}else{
+	for(int i = 0; i < index; i++){
+		x = (GetFormula("calcK2")/GetFormula("calcGamma2"))*( /*Lx/Kx*/CCPPhOld(i));
+	}
+}
+	return x;
+}
+public static double CCPPCa(int index){
+	//FORM: $C$23/$C$19^2/M13-49
+	double x = 0;
+	if(index == 0){
+		for(int i = 0; i < 37; i++){
+			x = (GetFormula("calcKso")/Math.pow(GetFormula("calcGamma2"), 2)/CCPPCO3(i));
+		}
+	}else{
+		for(int i = 0; i < index; i++){
+			x = (GetFormula("calcKso")/Math.pow(GetFormula("calcGamma2"), 2)/CCPPCO3(i));
+		}
+	}
+	return 0.0;
+}
+public static double CCPPOH(int index){
+	//FORM: $C$22/$C$18^2/K12
+	double x = 0;
+	if(index == 0){
+		for(int i = 0; i < 37; i++){
+			x = (GetFormula("calcKw")/(Math.pow(GetFormula("calcGamma1"),2)/CCPPhOld(i)));
+		}
+	}else{
+		for(int i = 0; i < index; i++){
+			x = (GetFormula("calcKw")/(Math.pow(GetFormula("calcGamma1"),2)/CCPPhOld(i)));
+		}
+	}
+	return x;
+}
+public static double CCPPFH(int index){
+	//FORM: $C$37-2*M12-L12-O12+K12+2*N12
+	double x = 0;
+	if(index == 0){
+		for(int i = 0; i < 37; i++){
+			x = (GetFormula("calcTotalAlk") - (2*CCPPCO3(i) - CCPPHCO3(i) - CCPPOH(i) + CCPPhOld(i) + 2*CCPPCa(i)) );
+		}
+	}else{
+		for(int i = 0; i < index; i++){
+			x = (GetFormula("calcTotalAlk") - (2*CCPPCO3(i) - CCPPHCO3(i) - CCPPOH(i) + CCPPhOld(i) + 2*CCPPCa(i)) );
+		}
+	}
+	return x;
+}
+public static double CCPPdHCO3dH(int index){
+	//FORM: ((-$C$22/$C$18^2/K12^2-1)*(1+2*$C$18^2*K12/$C$20)-(2*$C$18^2/$C$20)*($C$36+$C$22/$C$18^2/K12-K12))/(1+2*$C$18^2/$C$20*K12)^2\
+	double x = 0;
+	if(index == 0){
+		for(int i = 0; i < 37; i++){
+			((-GetFormula("calcKw")/(Math.pow(GetFormula("calcGamma1"),2)/Math.pow(CCPPhOld(i),2)-1) * (1+2*Math.pow(GetFormula("calcGamma1"), 2)*CCPPhOld(i)/GetFormula("calcK1")) - ))
+		}
+	}
+	return 0.0;
+}
+public static double CCPPdCO3dH(){
+	return 0.0;
+}
+public static double CCPPdCadH(){
+	return 0.0;
+}
+public static double CCPPdOHdH(){
+	return 0.0;
+}
+public static double CCPPdFdH(){
+	return 0.0;
+}
+public static double CCPPHnew(){
+	return 0.0;
+}
+public static double CCPPFlag(){
+	return 0.0;
 }
 
 public static void SetTolerance(double f){
@@ -182,21 +275,21 @@ public static double GetFormula(String formId){
 
 
 								double calcI = Math.round(tds*0.000025f * 10000d)/10000d; //C12
-								System.out.println("calcI is "+ calcI);
+								//System.out.println("calcI is "+ calcI);
 								double calcE = 60954f/(temperature + 273.15f+116f)-68.937f; //C13
-								System.out.println("calcE is " + calcE);
+								//System.out.println("calcE is " + calcE);
 								double calcA = 1820000f*Math.pow((calcE*(temperature+273.15f)),(-1.5f)); //C14
-								System.out.println("CalcA is " + Math.round(calcA * 1000000000d)/1000000000d);
+								//System.out.println("CalcA is " + Math.round(calcA * 1000000000d)/1000000000d);
 
 								double calcLogGamma1 = -1.0f*calcA*Math.pow(1f,2f)*(Math.sqrt(calcI)/(1f+Math.sqrt(calcI)))-0.3f*calcI;  //C15
-								System.out.println("calcloggamma1 is "+Math.round(calcLogGamma1 * 1000000000d)/1000000000d);
+								//System.out.println("calcloggamma1 is "+Math.round(calcLogGamma1 * 1000000000d)/1000000000d);
 								double calcLogGamma2 = -1.0f*calcA*Math.pow(2f, 2f)*(Math.sqrt(calcI)/(1f+Math.sqrt(calcI))-0.3f*calcI); //C16
 
 								//Rounding test for calcGamma
 
 
 								double calcGamma1 = Math.round(Math.pow(10, calcLogGamma1)*10000d)/10000d; //C18
-								System.out.println("calcGamma1 is "+ calcGamma1);
+								//System.out.println("calcGamma1 is "+ calcGamma1);
 								double calcGamma2 = Math.pow(10, calcLogGamma2); //C19
 
 								double calcK1 = Math.pow(10f, (-1f*(356.309-21834.4/(273f+GetTemp())-126.834*Math.log10(273f+GetTemp())+0.06092*(273f+GetTemp())+1684915f/Math.pow(273f+GetTemp(),2)))); //C20
@@ -212,17 +305,17 @@ public static double GetFormula(String formId){
 
 								double calcHpositive = Math.pow(10, pH*-1)/calcGamma1; //C28
 								double calcOHnegative = calcKw/calcHpositive/Math.pow(calcGamma1,2); //C29
-								System.out.println("calchpositive "+calcHpositive);
-								System.out.println("calcOHnegative is "+ calcOHnegative);
+								//System.out.println("calchpositive "+calcHpositive);
+								//System.out.println("calcOHnegative is "+ calcOHnegative);
 
 								double calcH2CO3 = Math.pow(calcGamma1, 2f*calcHpositive/calcK1*(alkalinity/50000f-calcKw/Math.pow((calcGamma1),2)/calcHpositive+calcHpositive)/(1f+2f*calcK2/calcGamma2/calcHpositive)); //C33
 								double calcHCO3 = (alkalinity/50000f-calcKw/Math.pow((calcGamma1), 2)/calcHpositive+calcHpositive)/(1f+2f*calcK2/calcGamma2/calcHpositive); //C34
-								System.out.println("calchco3 " + calcHCO3);
+								//System.out.println("calchco3 " + calcHCO3);
 								double calcCO32negative = calcK2/calcGamma2/calcHpositive*(alkalinity/50000-calcKw/Math.pow(calcGamma1, 2)/calcHpositive+calcHpositive)/(1f+2f*calcK2/calcGamma2/calcHpositive); //C35
 								double calcTotalAcidity = 2*calcH2CO3+calcHCO3+calcHpositive-calcKw/calcHpositive/Math.pow(calcGamma1, 2); //C36
-								System.out.println("calctotalalkalinity "+calcTotalAcidity);
+								//System.out.println("calctotalalkalinity "+calcTotalAcidity);
 								double calcCtCO3 = (calcH2CO3 + calcHCO3 + calcCO32negative); //C32
-								System.out.println("calcctco3 is"+ calcCtCO3);
+								//System.out.println("calcctco3 is"+ calcCtCO3);
 
 								double calcTotalAlk = alkalinity/50000f-2f*calcCalcium/100000f; //C37
 								double calcAlpha0 = calcHpositive/(calcHpositive+calcK1); //C39
