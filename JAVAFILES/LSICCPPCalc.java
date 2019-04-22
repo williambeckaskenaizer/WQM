@@ -17,23 +17,37 @@ private static double portalCalcium;
 private static double calcCalcium;
 
 //Other variables
-private static double tolerance;
-private static int numRecurrance;
+/* X */
 
 public static void main(String args[]){
 	//initialize manual entry table
 	SetPh(8.08f);
 	SetAlkalinity(190.f);
 	SetPortalCalcium(61.2f);
-	SetTDS(364.f);
-	SetTemp(18.f);
-	SetTolerance(.0000000000001);
-	SetNumRecurrance(37);
+	SetTDS(364);
+	SetTemp(18);
 
-	System.out.println(CCPPpH(12));
-	System.out.println(CCPPhOld(12));
-	System.out.println(CCPPHCO3(12));
+//CALCULATED VALUES
+	double saturationIndex = GetFormula("calcLSI");
+	double CCPP = GetFormula("calcCCPP");
+	double aggressiveIndex = GetFormula("calcAI");
+	double ryznarIndex = GetFormula("calcRI");
+	double dissolvedOrganicCarbon = GetFormula("calcCtCO3")*12*1000;
+
+	// System.out.println(CCPPpH(12));
+	// System.out.println(CCPPhOld(12));
+	// System.out.println(CCPPHCO3(12));
+
+	System.out.println("Saturation Index: " + saturationIndex);
+	System.out.println("CCPP: " + CCPP);
+	System.out.println("Aggressive Index: " + aggressiveIndex);
+	System.out.println("Ryznar Index: " + ryznarIndex);
+	System.out.println("Dissolved Organic Carbon: " + dissolvedOrganicCarbon);
+
+
 }
+
+
 
 //CCPP CALCULATION FORMULAS
 
@@ -142,47 +156,102 @@ public static double CCPPdHCO3dH(int index){
 	double x = 0;
 	if(index == 0){
 		for(int i = 0; i < 37; i++){
-			((-GetFormula("calcKw")/(Math.pow(GetFormula("calcGamma1"),2)/Math.pow(CCPPhOld(i),2)-1) * (1+2*Math.pow(GetFormula("calcGamma1"), 2)*CCPPhOld(i)/GetFormula("calcK1")) - ))
+			x = (-GetFormula("calcKw")/(Math.pow(GetFormula("calcGamma1"),2)/Math.pow(CCPPhOld(i),2)-1)
+			*(1+2*Math.pow(GetFormula("calcGamma1"), 2)*CCPPhOld(i)/GetFormula("calcK1"))-(2*Math.pow(GetFormula("calcGamma1"), 2)
+			/GetFormula("calcK1"))*(GetFormula("calcTotalAcidity")+GetFormula("calcKw")/Math.pow(GetFormula("calcGamma1"), 2)/CCPPhOld(i) - CCPPhOld(i))
+			/(1+2*Math.pow(GetFormula("calcGamma1"), 2)/Math.pow(GetFormula("calcK1" ) * CCPPhOld(i), 2)));
+		}
+	}else{
+		for(int i = index; i < 37; i++){
+			x = (-GetFormula("calcKw")/(Math.pow(GetFormula("calcGamma1"),2)/Math.pow(CCPPhOld(i),2)-1)
+			*(1+2*Math.pow(GetFormula("calcGamma1"), 2)*CCPPhOld(i)/GetFormula("calcK1"))-(2*Math.pow(GetFormula("calcGamma1"), 2)
+			/GetFormula("calcK1"))*(GetFormula("calcTotalAcidity")+GetFormula("calcKw")/Math.pow(GetFormula("calcGamma1"), 2)/CCPPhOld(i) - CCPPhOld(i))
+			/(1+2*Math.pow(GetFormula("calcGamma1"), 2)/Math.pow(GetFormula("calcK1" ) * CCPPhOld(i), 2)));
 		}
 	}
-	return 0.0;
+	return x;
 }
-public static double CCPPdCO3dH(){
-	return 0.0;
+public static double CCPPdCO3dH(int index){
+	//FORM: $C$21/$C$19*(Q12*K12-L12)/K12^2
+	double x = 0.0;
+	if(index == 0){
+		for(int i = 0; i < 37; i++){
+			x = (GetFormula("calcK2")/GetFormula("calcGamma2")*(CCPPdHCO3dH(i)*CCPPhOld(i)-CCPPHCO3(i))/Math.pow(CCPPhOld(i), 2));
+		}
+	}else{
+		for(int i = index; i < 37; i++){
+			x = (GetFormula("calcK2")/GetFormula("calcGamma2")*(CCPPdHCO3dH(i)*CCPPhOld(i)-CCPPHCO3(i))/Math.pow(CCPPhOld(i), 2));
+		}
+	}
+	return x;
 }
-public static double CCPPdCadH(){
-	return 0.0;
+public static double CCPPdCadH(int index){
+	//FORM: $C$23/$C$19^2*(-R12)/M12^2
+	double x = 0.0;
+	if(index == 0){
+		for(int i = 0; i < 37; i++){
+			x = GetFormula("calcKso")/Math.pow(GetFormula("calcGamma2"), 2)*(-CCPPdCO3dH(i))/CCPPCO3(i);
+		}
+	}else{
+		for(int i = index; i < 37; i++){
+			x = GetFormula("calcKso")/Math.pow(GetFormula("calcGamma2"), 2)*(-CCPPdCO3dH(i))/CCPPCO3(i);
+		}
+	}
+	return x;
 }
-public static double CCPPdOHdH(){
-	return 0.0;
+public static double CCPPdOHdH(int index){
+	//FORM: -$C$22/$C$18^2/K12^2
+	double x = 0.0;
+	if(index == 0){
+		for(int i = 0; i < 37; i++){
+			x = -GetFormula("calcKw")/Math.pow(GetFormula("calcKw"), 2)/Math.pow(CCPPhOld(i), 2);
+		}
+	}else{
+		for(int i = index; i < 37; i++){
+			x = -GetFormula("calcKw")/Math.pow(GetFormula("calcKw"), 2)/Math.pow(CCPPhOld(i), 2);
+		}
+	}
+	return x;
 }
-public static double CCPPdFdH(){
-	return 0.0;
+public static double CCPPdFdH(int index){
+	//FORM: -2*R12-Q12-T12+1+2*S12
+	double x = 0;
+	if(index == 0){
+		for(int i = 0; i < 37; i++){
+			x = -2*CCPPdCO3dH(i) - CCPPdHCO3dH(i) - CCPPdOHdH(i) + 1 + 2* CCPPdCadH(i);
+		}
+	}else{
+			for(int i = index; i < 37; i++){
+				x = -2*CCPPdCO3dH(i) - CCPPdHCO3dH(i) - CCPPdOHdH(i) + 1 + 2* CCPPdCadH(i);
+			}
+		}
+	return x;
 }
 public static double CCPPHnew(){
-	return 0.0;
+	//FORM: IF((K12-P12/U12)<0,K12/10,K12-P12/U12)
+	double x = 0;
+	for(int i = 0; i < 37; i++){
+		if(CCPPhOld(i)-CCPPFH(i)/CCPPdFdH(i) < 0){
+			x = CCPPhOld(i)/10;
+		}else{
+			x = (CCPPhOld(i)-CCPPFH(i))/(CCPPdFdH(i));
+		}
+	}
+	return x;
 }
 public static double CCPPFlag(){
-	return 0.0;
+//FORM: IF(ABS((J13-J12)/J12)>$J$8,1,0)
+double x = 0;
+for(int i = 12; i < 34; i++){
+	if(Math.abs((CCPPpH(i+1) - CCPPpH(i)/CCPPpH(i))) > 0.000001){
+		x = 1;
+	}else{
+		x = 0;
+	}
+
 }
-
-public static void SetTolerance(double f){
-	tolerance = f;
+return x;
 }
-
-static double GetTolerance(){
-	return tolerance;
-}
-
-static void SetNumRecurrance(int n){
-	numRecurrance = n;
-}
-
-static double GetNumRecurrance(){
-	return numRecurrance;
-}
-
-
 
 public static void SetTemp(double f){
 								temperature = f;
@@ -349,6 +418,11 @@ public static double GetFormula(String formId){
 								case "calcpKso": return calcpKso;
 								case "calcHpositive": return calcHpositive;
 								case "calcHC03": return calcHCO3;
+								case "calcLSI": return calcLSI;
+								case "calcpHs": return calcpHs;
+								case "calcCCPP": return calcCCPP;
+								case "calcAI": return calcAI;
+								case "calcRI": return calcRI;
 								default: return 0.0f;
 								}
 }
