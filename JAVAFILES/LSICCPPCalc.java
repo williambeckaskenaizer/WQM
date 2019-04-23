@@ -30,7 +30,7 @@ public static void main(String args[]){
 
 //CALCULATED VALUES
 	double saturationIndex = Math.log(calcLSI());
-	double CCPP = calcCCPP();
+	//double CCPP = calcCCPP();
 	double aggressiveIndex = calcAI();
 	double ryznarIndex = calcRI();
 	double dissolvedOrganicCarbon = calcCtCO3()*12*1000;
@@ -40,18 +40,11 @@ public static void main(String args[]){
 	// System.out.println(CCPPHCO3(12));
 
 	System.out.println("Saturation Index: " + saturationIndex);
-	System.out.println("CCPP: " + CCPP);
+	//System.out.println("CCPP: " + CCPP);
 	System.out.println("Aggressive Index: " + aggressiveIndex);
 	System.out.println("Ryznar Index: " + ryznarIndex);
 	System.out.println("Dissolved Organic Carbon: " + dissolvedOrganicCarbon);
 	System.out.println("----------------------------------------");
-	// System.out.println("Calc Saturation Ratio: " + calcSaturationRatio());
-	// System.out.println("calcCO32negative: " + calcCO32negative());
-	// System.out.println("calcHpositive: " + calcHpositive());
-	// System.out.println("calcK2: " + calcK2());
-	// System.out.println("calcGamma2: " + calcGamma2());
-	// System.out.println("calcKso: " + calcKso());
-	// System.out.println("calcCalcium: " + calcCalcium);
 	CCPPpH();
 	CCPPhOld();
 	CCPPHCO3();
@@ -65,10 +58,6 @@ public static void main(String args[]){
 	CCPPdOHdH();
 	CCPPdFdH();
 	CCPPHnew();
-
-	System.out.println("calcI: " + calcI());
-
-
 }
 
 
@@ -78,7 +67,7 @@ public static void main(String args[]){
 public static double CCPPpH(){
 	//FORM: -LOG(V12-47*C18)
 	double x;
-			x = -(Math.log10(CCPPHnew() * calcGamma1()));
+			x = -(Math.log(CCPPHnew() * calcGamma1()));
 	return x;
 }
 public static double CCPPhOld(){
