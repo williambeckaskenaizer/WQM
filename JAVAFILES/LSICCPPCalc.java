@@ -29,36 +29,36 @@ public static void main(String args[]){
 	SetTemp(18);
 
 //CALCULATED VALUES
-	double saturationIndex = Math.log(calcLSI());
+	//double saturationIndex = Math.log(calcLSI());
 	//double CCPP = calcCCPP();
-	double aggressiveIndex = calcAI();
-	double ryznarIndex = calcRI();
-	double dissolvedOrganicCarbon = calcCtCO3()*12*1000;
+	//double aggressiveIndex = calcAI();
+	//double ryznarIndex = calcRI();
+	//double dissolvedOrganicCarbon = calcCtCO3()*12*1000;
 
 	// System.out.println(CCPPpH(12));
 	// System.out.println(CCPPhOld(12));
 	// System.out.println(CCPPHCO3(12));
 
-	System.out.println("Saturation Index: " + saturationIndex);
+	//System.out.println("Saturation Index: " + saturationIndex);
 	//System.out.println("CCPP: " + CCPP);
-	System.out.println("Aggressive Index: " + aggressiveIndex);
-	System.out.println("Ryznar Index: " + ryznarIndex);
-	System.out.println("Dissolved Organic Carbon: " + dissolvedOrganicCarbon);
+	//System.out.println("Aggressive Index: " + aggressiveIndex);
+	//System.out.println("Ryznar Index: " + ryznarIndex);
+	//System.out.println("Dissolved Organic Carbon: " + dissolvedOrganicCarbon);
 	System.out.println("----------------------------------------");
-	CCPPpH();
-	CCPPhOld();
-	CCPPHCO3();
-	CCPPCO3();
-	CCPPCa();
-	CCPPOH();
-	CCPPFH();
-	CCPPdHCO3dH();
-	CCPPdCO3dH();
-	CCPPdCadH();
-	CCPPdOHdH();
-	CCPPdFdH();
+	//CCPPpH();
+// 	CCPPhOld();
+// 	CCPPHCO3();
+// 	CCPPCO3();
+// 	CCPPCa();
+// 	CCPPOH();
+// 	CCPPFH();
+// 	CCPPdHCO3dH();
+// 	CCPPdCO3dH();
+// 	CCPPdCadH();
+// 	CCPPdOHdH();
+// 	CCPPdFdH();
 	CCPPHnew();
-}
+ }
 
 
 
