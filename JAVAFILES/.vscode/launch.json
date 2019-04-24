@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - LSICCPPCalc",
+            "request": "launch",
+            "mainClass": "LSICCPPCalc",
+            "projectName": "JAVAFILES_ebddf6df"
+        }
+    ]
+}
