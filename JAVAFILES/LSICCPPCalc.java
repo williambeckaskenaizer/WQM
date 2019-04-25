@@ -138,6 +138,8 @@ public class LSICCPPCalc {
 				//close 
 				ccppCa = (calcKso() / Math.pow(calcGamma2(), 2) / ccppco3);
 				ccppOh = (calcKw() / Math.pow(calcGamma1(), 2) / ccpphOld);
+
+				
 				ccppFh = (calcTotalAlk() - 2 * ccppco3 - ccpphco3 - ccppOh + ccpphOld + 2 * ccppCa);
 				ccppdhco3dh = ((-calcKw() / Math.pow(calcGamma1(), 2) / Math.pow(ccpphOld, 2) - 1)
 						* (1 + 2 * Math.pow(calcGamma1(), 2) * ccpphOld / calcK1())
