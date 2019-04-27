@@ -28,6 +28,8 @@ public class LSICCPPCalc {
 	private static double ccppdfdh;
 	private static double ccppHnew;
 
+	double CCPP;
+
 	// Other variables
 	/* X */
 
@@ -44,7 +46,7 @@ public class LSICCPPCalc {
 
 		// CALCULATED VALUES
 		// double saturationIndex = Math.log(calcLSI());
-		double CCPP = calcCCPP();
+		
 		// double aggressiveIndex = calcAI();
 		// double ryznarIndex = calcRI();
 		// double dissolvedOrganicCarbon = calcCtCO3()*12*1000;
@@ -54,7 +56,8 @@ public class LSICCPPCalc {
 		// System.out.println(CCPPHCO3(12));
 
 		// System.out.println("Saturation Index: " + saturationIndex);
-		System.out.println("CCPP: " + CCPP);
+		System.out.println("CALC CALCIUM IS " + GetCalcCalcium());
+		System.out.println("CCPP: " + calcCCPP());
 		// System.out.println("Aggressive Index: " + aggressiveIndex);
 		// System.out.println("Ryznar Index: " + ryznarIndex);
 		// System.out.println("Dissolved Organic Carbon: " + dissolvedOrganicCarbon);
@@ -340,7 +343,7 @@ public class LSICCPPCalc {
 	}
 
 	public static double calcCCPP() {
-		return calcCalcium - 100000.0 * initCCPP();
+		return GetCalcCalcium() -100000*ccppCa;
 	}
 
 	/*
