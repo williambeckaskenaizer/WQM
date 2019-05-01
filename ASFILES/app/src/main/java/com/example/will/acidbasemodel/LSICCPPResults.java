@@ -7,8 +7,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class LSICCPPResults extends AppCompatActivity {
     private static double temperature;
@@ -38,6 +44,16 @@ public class LSICCPPResults extends AppCompatActivity {
     private static double ccppHnew;
 
     @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(LSICCPPResults.this, LSICCPP.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("EXIT", true);
+        startActivity(intent);
+
+        finish();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lsiccppresults);
@@ -45,6 +61,8 @@ public class LSICCPPResults extends AppCompatActivity {
         View view = findViewById(R.id.lsiccppresLayout);
         Context context = this.getApplicationContext();
         view.setBackgroundColor(ContextCompat.getColor(context, R.color.mainColor));
+
+
 
         final Button doneButton = findViewById(R.id.ccppDone);
         doneButton.setBackgroundColor(Color.parseColor("#a67884"));
@@ -60,11 +78,31 @@ public class LSICCPPResults extends AppCompatActivity {
             }
         });
 
+
+
+
+
+        // Get reference of widgets from XML layout
+        final ListView lv = (ListView) findViewById(R.id.complexCCPPValues);
+        // Initializing a new String Array
+        String[] vals = new String[]{};
+        // Create a List from String Array elements
+        final List<String> vals_list = new ArrayList<String>(Arrays.asList(vals));
+        // Create an ArrayAdapter from List
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>
+                (this, android.R.layout.simple_list_item_1, vals_list);
+
+        // DataBind ListView with items from ArrayAdapter
+        lv.setAdapter(arrayAdapter);
+        arrayAdapter.notifyDataSetChanged();
+
         String ph = getIntent().getStringExtra("cPH");
         String tds = getIntent().getStringExtra("cTDS");
         String cal = getIntent().getStringExtra("cCAL");
         String temp = getIntent().getStringExtra("cTEMP");
         String alk = getIntent().getStringExtra("cALK");
+        int complex = getIntent().getIntExtra("COMP", 0);
+        //int complex = 1;
 
         double tdsD = Double.parseDouble(tds);
         double tempD = Double.parseDouble(temp);
@@ -81,31 +119,84 @@ public class LSICCPPResults extends AppCompatActivity {
 
         initCCPP();
 
-        Boolean complex = true;
 
-        if(!complex) {
-            TextView saturationIndexT = findViewById(R.id.saturationIndex);
-            TextView CCPPoutT = findViewById(R.id.CCPPout);
-            TextView aggressiveIndexT = findViewById(R.id.aggressiveIndex);
-            TextView ryznarIndexT = findViewById(R.id.ryznarIndex);
-            TextView dissolvedOrganicCarbonT = findViewById(R.id.dissolvedOrganicCarbon);
+        int numSigDig = 2;
+        int numDir = 0;
 
-            int numSigDig = 2;
-            int numDir = 0;
+        //ListView resList = (ListView)findViewById(R.id.complexCCPPValues);
 
-            String saturationIndexS = Double.toString(sigDigRounder(calcLSI(), numSigDig, numDir));
-            String CCPPoutS = Double.toString(sigDigRounder(calcCCPP(), numSigDig, numDir));
-            String aggressiveIndexS = Double.toString(sigDigRounder(calcAI(), 3, numDir));
-            String ryznarIndexS = Double.toString(sigDigRounder(calcRI(), numSigDig, numDir));
-            String dissolvedOrganicCarbonS = Double.toString((sigDigRounder(((calcCtCO3() * 12 * 1000)), numSigDig, numDir)));
 
-            saturationIndexT.setText(saturationIndexS);
-            CCPPoutT.setText(CCPPoutS);
-            aggressiveIndexT.setText(aggressiveIndexS);
-            ryznarIndexT.setText(ryznarIndexS);
-            dissolvedOrganicCarbonT.setText(dissolvedOrganicCarbonS);
+        if(complex == 0) {
+//            TextView saturationIndexT = findViewById(R.id.saturationIndex);
+//            TextView CCPPoutT = findViewById(R.id.CCPPout);
+//            TextView aggressiveIndexT = findViewById(R.id.aggressiveIndex);
+//            TextView ryznarIndexT = findViewById(R.id.ryznarIndex);
+//            TextView dissolvedOrganicCarbonT = findViewById(R.id.dissolvedOrganicCarbon);
+
+
+
+
+            String saturationIndexS = "Saturation Index:  " + (Double.toString(sigDigRounder(calcLSI(), numSigDig, numDir)));
+            vals_list.add(saturationIndexS);
+            String CCPPoutS = "CCPP:  " + Double.toString(sigDigRounder(calcCCPP(), numSigDig, numDir));
+            vals_list.add(CCPPoutS);
+            String aggressiveIndexS = "Aggressive Index:  " + Double.toString(sigDigRounder(calcAI(), 3, numDir));
+            vals_list.add(aggressiveIndexS);
+            String ryznarIndexS = "Ryznar Index:  " + Double.toString(sigDigRounder(calcRI(), numSigDig, numDir));
+            vals_list.add(ryznarIndexS);
+            String dissolvedOrganicCarbonS = "Dissolved Organic Carbon:  " + Double.toString((sigDigRounder(((calcCtCO3() * 12 * 1000)), numSigDig, numDir)));
+            vals_list.add(dissolvedOrganicCarbonS);
+
+
+
+
+//            saturationIndexT.setText(saturationIndexS);
+//            CCPPoutT.setText(CCPPoutS);
+//            aggressiveIndexT.setText(aggressiveIndexS);
+//            ryznarIndexT.setText(ryznarIndexS);
+//            dissolvedOrganicCarbonT.setText(dissolvedOrganicCarbonS);
         }else{
-            
+            String saturationIndexS = "Saturation Index:  " + (Double.toString(sigDigRounder(calcLSI(), numSigDig, numDir)));
+            vals_list.add(saturationIndexS);
+            String CCPPoutS = "CCPP:  " + Double.toString(sigDigRounder(calcCCPP(), numSigDig, numDir));
+            vals_list.add(CCPPoutS);
+            String aggressiveIndexS = "Aggressive Index:  " + Double.toString(sigDigRounder(calcAI(), 3, numDir));
+            vals_list.add(aggressiveIndexS);
+            String ryznarIndexS = "Ryznar Index:  " + Double.toString(sigDigRounder(calcRI(), numSigDig, numDir));
+            vals_list.add(ryznarIndexS);
+            String dissolvedOrganicCarbonS = "Dissolved Organic Carbon:  " + Double.toString((sigDigRounder(((calcCtCO3() * 12 * 1000)), numSigDig, numDir)));
+            vals_list.add(dissolvedOrganicCarbonS);
+            vals_list.add("");
+            vals_list.add("-ADDITIONAL VALUES BELOW-");
+            vals_list.add("I:  " + Double.toString(calcI()));
+            vals_list.add("A:  " + Double.toString(calcA()));
+            vals_list.add("E:  " + Double.toString(calcE()));
+            vals_list.add("LOG(g1):  " + Double.toString(calcLogGamma1()));
+            vals_list.add("LOG(g2):  " + Double.toString(calcLogGamma2()));
+            vals_list.add("g1:  " + Double.toString(calcGamma1()));
+            vals_list.add("g2:  " + Double.toString(calcGamma2()));
+            vals_list.add("K1:  " + Double.toString(calcK1()));
+            vals_list.add("K2:  " + Double.toString(calcK2()));
+            vals_list.add("Kw:  " + Double.toString(calcKw()));
+            vals_list.add("Kso:  " + Double.toString(calcKso()));
+            vals_list.add("pK1:  " + Double.toString(calcpK1()));
+            vals_list.add("pK2:  " + Double.toString(calcpK2()));
+            vals_list.add("pKw:  " + Double.toString(calcpKw()));
+            vals_list.add("pKso:  " + Double.toString(calcpKso()));
+            vals_list.add("H+:  " + Double.toString(calcHpositive()));
+            vals_list.add("OH-:  " + Double.toString(calcOHnegative()));
+            vals_list.add("CtCO3:  " + Double.toString(calcCtCO3()));
+            vals_list.add("H2CO3:  " + Double.toString(calcH2CO3()));
+            vals_list.add("HCO3-:  " + Double.toString(calcHCO3()));
+            vals_list.add("CO32-:  " + Double.toString(calcCO32negative()));
+            vals_list.add("Total Acidity:  " + Double.toString(calcTotalAcidity()));
+            vals_list.add("Tot. Alk - 2 Ca:  " + Double.toString(calcTotalAlk()));
+            vals_list.add("a0:  " + Double.toString(calcAlpha0()));
+            vals_list.add("a1:  " + Double.toString(calcAlpha1()));
+            vals_list.add("a2:  " + Double.toString(calcAlpha2()));
+            vals_list.add("Alk. Check:  " + Double.toString(calcAlkalinityCheck()));
+            vals_list.add("Saturation Ratio:  " + Double.toString(calcSaturationRatio()));
+            vals_list.add("pHs:  " + Double.toString(calcpHs()));
         }
 
 

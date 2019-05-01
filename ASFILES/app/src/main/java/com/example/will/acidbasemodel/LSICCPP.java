@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -38,7 +39,6 @@ public class LSICCPP extends AppCompatActivity {
         });
     }
     private void launchResults() {
-
 
         EditText temp = findViewById(R.id.tempCCPPin);
         EditText tds = findViewById(R.id.tdsCCPPin);
@@ -73,11 +73,21 @@ public class LSICCPP extends AppCompatActivity {
         }
 
 
+
+
         intent.putExtra("cTEMP", tempContent);
         intent.putExtra("cTDS", tdsContent);
         intent.putExtra("cALK", alkContent);
         intent.putExtra("cPH", phContent);
         intent.putExtra("cCAL", calciumContent);
+
+        CheckBox complexOption = (CheckBox)findViewById(R.id.ccppTableOption);
+        if(complexOption.isChecked()){
+            intent.putExtra("COMP", 1);
+        }else{
+            intent.putExtra("COMP", 0);
+        }
+
 
         Bundle extras = intent.getExtras();
         if (extras == null) {
