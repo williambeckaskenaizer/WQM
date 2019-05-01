@@ -1,10 +1,14 @@
 package com.example.will.acidbasemodel;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.icu.text.DecimalFormat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class AcidBaseResults extends AppCompatActivity {
@@ -17,6 +21,20 @@ public class AcidBaseResults extends AppCompatActivity {
         View view = findViewById(R.id.acidbaseresLayout);
         Context context = this.getApplicationContext();
         view.setBackgroundColor(ContextCompat.getColor(context, R.color.mainColor));
+
+        final Button doneButton = findViewById(R.id.abDone);
+        doneButton.setBackgroundColor(Color.parseColor("#a67884"));
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                Intent intent = new Intent(AcidBaseResults.this, acidbase.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("EXIT", true);
+                startActivity(intent);
+
+                finish();
+            }
+        });
 
         String ph = getIntent().getStringExtra("PH");
         String tds = getIntent().getStringExtra("TDS");
@@ -45,6 +63,12 @@ public class AcidBaseResults extends AppCompatActivity {
         TextView kwpk = findViewById(R.id.kwpk);
 
         TextView h2so4 = findViewById(R.id.h2so4);
+
+        TextView HCl = findViewById(R.id.HCl);
+
+        TextView NaOH = findViewById(R.id.NaOH);
+
+        TextView CaOH2 = findViewById(R.id.CaOH2);
 
         double alpha1num = sigDigRounder(Math.pow(10,(-0.0025*Math.sqrt(tdsD))), 4, 0);
         String alpha1Final = Double.toString(alpha1num);
@@ -98,6 +122,56 @@ public class AcidBaseResults extends AppCompatActivity {
             h2so4Final = Double.toString(h2so4num);
         }
         h2so4.setText(h2so4Final);
+
+        //IF(pHf<pHi,36.6/50*(alki-Alkf),"NA")
+        double hCLnum;
+        if(tphD < phD){
+            hCLnum = 36.6/50*(alkD - finalAlkNum);
+        }else{
+            hCLnum = 0.0;
+        }
+
+        String hCLfinal;
+        if(hCLnum == 0){
+            hCLfinal = "N/A";
+        }else{
+            hCLfinal = Double.toString(hCLnum);
+        }
+        HCl.setText(hCLfinal);
+
+        double naohNum;
+        if(tphD > phD){
+            naohNum = 40./50.*(finalAlkNum - alkD);
+
+        }else{
+            naohNum = 0.0;
+        }
+
+        naohNum = sigDigRounder(naohNum, 3, 0);
+
+        String naohFinal;
+
+        if(naohNum == 0){
+            naohFinal = "N/A";
+        }else{
+            naohFinal = Double.toString(naohNum);
+        }
+        NaOH.setText(naohFinal);
+
+        double caoh2Num;
+        if(tphD > phD){
+            caoh2Num =(40.0+17.0*2)/2.0/50.0*(finalAlkNum - alkD);
+        }else{
+            caoh2Num = 0.0;
+        }
+        caoh2Num = sigDigRounder(caoh2Num, 3, 0);
+        String caoh2Final;
+        if(caoh2Num == 0){
+            caoh2Final = "N/A";
+        }else{
+            caoh2Final = Double.toString(caoh2Num);
+        }
+        CaOH2.setText(caoh2Final);
 
 
 

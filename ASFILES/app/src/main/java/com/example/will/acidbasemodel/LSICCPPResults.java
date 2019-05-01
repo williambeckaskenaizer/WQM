@@ -1,10 +1,13 @@
 package com.example.will.acidbasemodel;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class LSICCPPResults extends AppCompatActivity {
@@ -43,6 +46,20 @@ public class LSICCPPResults extends AppCompatActivity {
         Context context = this.getApplicationContext();
         view.setBackgroundColor(ContextCompat.getColor(context, R.color.mainColor));
 
+        final Button doneButton = findViewById(R.id.ccppDone);
+        doneButton.setBackgroundColor(Color.parseColor("#a67884"));
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                Intent intent = new Intent(LSICCPPResults.this, LSICCPP.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("EXIT", true);
+                startActivity(intent);
+
+                finish();
+            }
+        });
+
         String ph = getIntent().getStringExtra("cPH");
         String tds = getIntent().getStringExtra("cTDS");
         String cal = getIntent().getStringExtra("cCAL");
@@ -64,26 +81,32 @@ public class LSICCPPResults extends AppCompatActivity {
 
         initCCPP();
 
-        TextView saturationIndexT = findViewById(R.id.saturationIndex);
-        TextView CCPPoutT = findViewById(R.id.CCPPout);
-        TextView aggressiveIndexT = findViewById(R.id.aggressiveIndex);
-        TextView ryznarIndexT = findViewById(R.id.ryznarIndex);
-        TextView dissolvedOrganicCarbonT = findViewById(R.id.dissolvedOrganicCarbon);
+        Boolean complex = true;
 
-        int numSigDig = 2;
-        int numDir = 0;
+        if(!complex) {
+            TextView saturationIndexT = findViewById(R.id.saturationIndex);
+            TextView CCPPoutT = findViewById(R.id.CCPPout);
+            TextView aggressiveIndexT = findViewById(R.id.aggressiveIndex);
+            TextView ryznarIndexT = findViewById(R.id.ryznarIndex);
+            TextView dissolvedOrganicCarbonT = findViewById(R.id.dissolvedOrganicCarbon);
 
-        String saturationIndexS = Double.toString( sigDigRounder(calcLSI(), numSigDig, numDir));
-        String CCPPoutS = Double.toString( sigDigRounder(calcCCPP(), numSigDig, numDir));
-        String aggressiveIndexS = Double.toString( sigDigRounder(calcAI(), 3, numDir));
-        String ryznarIndexS = Double.toString( sigDigRounder(calcRI(), numSigDig, numDir));
-        String dissolvedOrganicCarbonS = Double.toString( (sigDigRounder(((calcCtCO3()*12*1000)), numSigDig, numDir)));
+            int numSigDig = 2;
+            int numDir = 0;
 
-        saturationIndexT.setText(saturationIndexS);
-        CCPPoutT.setText(CCPPoutS);
-        aggressiveIndexT.setText(aggressiveIndexS);
-        ryznarIndexT.setText(ryznarIndexS);
-        dissolvedOrganicCarbonT.setText(dissolvedOrganicCarbonS);
+            String saturationIndexS = Double.toString(sigDigRounder(calcLSI(), numSigDig, numDir));
+            String CCPPoutS = Double.toString(sigDigRounder(calcCCPP(), numSigDig, numDir));
+            String aggressiveIndexS = Double.toString(sigDigRounder(calcAI(), 3, numDir));
+            String ryznarIndexS = Double.toString(sigDigRounder(calcRI(), numSigDig, numDir));
+            String dissolvedOrganicCarbonS = Double.toString((sigDigRounder(((calcCtCO3() * 12 * 1000)), numSigDig, numDir)));
+
+            saturationIndexT.setText(saturationIndexS);
+            CCPPoutT.setText(CCPPoutS);
+            aggressiveIndexT.setText(aggressiveIndexS);
+            ryznarIndexT.setText(ryznarIndexS);
+            dissolvedOrganicCarbonT.setText(dissolvedOrganicCarbonS);
+        }else{
+            
+        }
 
 
 

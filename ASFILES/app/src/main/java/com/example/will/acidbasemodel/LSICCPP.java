@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class LSICCPP extends AppCompatActivity {
 
@@ -16,6 +17,12 @@ public class LSICCPP extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lsiccpp);
+        if (getIntent().getBooleanExtra("EXIT", false))
+        {
+            finish();
+        }
+
+
 
         View view = findViewById(R.id.lsiccppLayout);
         Context context = this.getApplicationContext();
@@ -46,11 +53,36 @@ public class LSICCPP extends AppCompatActivity {
         String phContent = ph.getText().toString();
         String calciumContent = calcium.getText().toString();
 
+        if (phContent.matches("")) {
+            Toast.makeText(this, "Please enter a valid pH value", Toast.LENGTH_SHORT).show();
+            return;
+        }else if (alkContent.matches("")) {
+            Toast.makeText(this, "Please enter a valid Alkalinity value", Toast.LENGTH_SHORT).show();
+            return;
+        }else if (calciumContent.matches("")) {
+            Toast.makeText(this, "Please enter a valid Calcium value", Toast.LENGTH_SHORT).show();
+            return;
+        }else if (tdsContent.matches("")) {
+            Toast.makeText(this, "Please enter a valid Total Dissolved Solids value", Toast.LENGTH_SHORT).show();
+            return;
+        }else if (tempContent.matches("")) {
+            Toast.makeText(this, "Please enter a valid Temperature value", Toast.LENGTH_SHORT).show();
+            return;
+        }else{
+            startActivity(intent);
+        }
+
+
         intent.putExtra("cTEMP", tempContent);
         intent.putExtra("cTDS", tdsContent);
         intent.putExtra("cALK", alkContent);
         intent.putExtra("cPH", phContent);
         intent.putExtra("cCAL", calciumContent);
+
+        Bundle extras = intent.getExtras();
+        if (extras == null) {
+            finish();
+        }
 
 
         startActivity(intent);

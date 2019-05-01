@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class acidbase extends AppCompatActivity {
 
@@ -16,6 +17,10 @@ public class acidbase extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_acidbase);
+        if (getIntent().getBooleanExtra("EXIT", false))
+        {
+            finish();
+        }
 
         View view = findViewById(R.id.acidbase);
         Context context = this.getApplicationContext();
@@ -35,8 +40,8 @@ public class acidbase extends AppCompatActivity {
     }
     private void launchResults() {
 
-        EditText temp = (EditText)findViewById(R.id.tempIn);
-        EditText tds = (EditText)findViewById(R.id.tdsIn);
+        EditText temp = findViewById(R.id.tempIn);
+        EditText tds = findViewById(R.id.tdsIn);
         EditText alk = findViewById(R.id.alkalinityIn);
         EditText ph = findViewById(R.id.pHIn);
         EditText tph = findViewById(R.id.targetPHIn);
@@ -54,7 +59,21 @@ public class acidbase extends AppCompatActivity {
         intent.putExtra("PH", phContent);
         intent.putExtra("TPH", tphContent);
 
+        if (tempContent.matches("")) {
+            Toast.makeText(this, "Please enter a valid Temperature value", Toast.LENGTH_SHORT).show();
+        }else if (tdsContent.matches("")) {
+            Toast.makeText(this, "Please enter a valid TDS value", Toast.LENGTH_SHORT).show();
+        }else if (alkContent.matches("")) {
+            Toast.makeText(this, "Please enter a valid Alkalinity value", Toast.LENGTH_SHORT).show();
+        }else if (phContent.matches("")) {
+            Toast.makeText(this, "Please enter a valid pH value", Toast.LENGTH_SHORT).show();
+        }else if (tphContent.matches("")) {
+            Toast.makeText(this, "Please enter a valid Target pH value", Toast.LENGTH_SHORT).show();
+        }else{
+            startActivity(intent);
+        }
 
-        startActivity(intent);
+
+
     }
 }

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">AcidBaseModel</string>
+    <string name="k1">k<sub>1</sub></string>
+    <string name="k2">k<sub>2</sub></string>
+    <string name="kw">k<sub>w</sub></string>
+    <string name="a1">𝛼<sub>1</sub></string>
+    <string name="a2">𝛼<sub>2</sub></string>
 </resources>
