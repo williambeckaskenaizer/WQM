@@ -1,6 +1,10 @@
 package com.example.will.acidbasemodel;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.constraint.ConstraintLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,8 +16,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        View view = findViewById(R.id.mainLayout);
+        Context context = this.getApplicationContext();
+        view.setBackgroundColor(ContextCompat.getColor(context, R.color.mainColor));
         //we back, boys
         final Button LSIbutton = findViewById(R.id.lsiccpp);
+        LSIbutton.setBackgroundColor(Color.parseColor("#a67884"));
         LSIbutton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //setContentView(R.layout.activity_lsiccpp);
@@ -22,9 +30,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         final Button acidbaseButton = findViewById(R.id.acidbase);
+        acidbaseButton.setBackgroundColor(Color.parseColor("#a67884"));
         acidbaseButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //setContentView(R.layout.activity_acidbase);
+
                 launchAcidbase();
             }
         });

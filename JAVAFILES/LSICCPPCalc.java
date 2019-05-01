@@ -35,118 +35,122 @@ public class LSICCPPCalc {
 
 	public static void main(String args[]) {
 		// initialize manual entry table
-		SetPh(8.08);
-		SetAlkalinity(190);
-		SetPortalCalcium(61.2);
+		SetPh(10);
+		SetAlkalinity(10);
+		SetPortalCalcium(10);
 		SetCalcCalcium();
-		SetTDS(364);
-		SetTemp(18);
+		SetTDS(10);
+		SetTemp(10);
 		initCCPP();
-		//PrintFormulas();
+		PrintFormulas();
 
 		// CALCULATED VALUES
-		// double saturationIndex = Math.log(calcLSI());
-		
-		// double aggressiveIndex = calcAI();
-		// double ryznarIndex = calcRI();
-		// double dissolvedOrganicCarbon = calcCtCO3()*12*1000;
-
-		// System.out.println(CCPPpH(12));
-		// System.out.println(CCPPhOld(12));
-		// System.out.println(CCPPHCO3(12));
-
-		// System.out.println("Saturation Index: " + saturationIndex);
+		double saturationIndex = (calcLSI());
+		double aggressiveIndex = calcAI();
+		double ryznarIndex = calcRI();
+		double dissolvedOrganicCarbon = calcCtCO3()*12*1000;
+		System.out.println("Saturation Ratio: " + calcSaturationRatio());
+		System.out.println("Saturation Index: " + saturationIndex);
 		System.out.println("CCPP: " + calcCCPP());
-		// System.out.println("Aggressive Index: " + aggressiveIndex);
-		// System.out.println("Ryznar Index: " + ryznarIndex);
-		// System.out.println("Dissolved Organic Carbon: " + dissolvedOrganicCarbon);
-		System.out.println("----------------------------------------");
+		System.out.println("Aggressive Index: " + aggressiveIndex);
+		System.out.println("Ryznar Index: " + ryznarIndex);
+		System.out.println("Dissolved Organic Carbon: " + dissolvedOrganicCarbon);
+		System.out.println("---------------whatthefuck-------------------------");
 	}
 
 	public static double initCCPP() {
 		for (int i = 0; i < 37; i++) {
 			if (i == 0) {
-				ccpppH = GetPh();
+				ccpppH = sigDigRounder(( GetPh() ), 15, -1);
 				System.out.println("ph: " + ccpppH);
 
-				ccpphOld = Math.round(((Math.pow(10, -ccpppH) / calcGamma1()) )*100000000000d)/100000000000d;
+				ccpphOld = sigDigRounder(((Math.pow(10, -ccpppH) / calcGamma1()) ), 15, -1);
 				System.out.println("hOld: " + ccpphOld);
 
-				ccpphco3 = Math.round(( (calcTotalAcidity() + calcKw() / Math.pow(calcGamma1(), 2) / ccpphOld
-						- ccpphOld / (1 + Math.pow(2, Math.pow(calcGamma1(), 2) / calcK1() * ccpphOld))) )*10000d)/10000d;
+				ccpphco3 = sigDigRounder((calcTotalAcidity() + calcKw() / Math.pow(calcGamma1(), 2) / ccpphOld
+						- ccpphOld / (1 + Math.pow(2, Math.pow(calcGamma1(), 2) / calcK1() * ccpphOld))), 15, -1);
 				System.out.println("HCO3: " + (ccpphco3));
 					
-				ccppco3 = Math.round(( (calcK2() / calcGamma2()) * (ccpphco3 / ccpphOld) )*10000000d)/10000000d;
+				ccppco3 = sigDigRounder((calcK2() / calcGamma2()) * (ccpphco3 / ccpphOld), 15, -1);
 				System.out.println("CO3: " + ccppco3);
 				
 				//close 
-				ccppCa = Math.round(( (calcKso() / Math.pow(calcGamma2(), 2) / ccppco3) )*1000000d)/1000000d;
+				ccppCa = sigDigRounder(( (calcKso() / Math.pow(calcGamma2(), 2) / ccppco3) ), 15, -1 );
 				System.out.println("Ca: " + ccppCa);
-				ccppOh = Math.round(( (calcKw() / Math.pow(calcGamma1(), 2) / ccpphOld) )*1000000000d)/1000000000d;
+
+				ccppOh = sigDigRounder( ( (calcKw() / Math.pow(calcGamma1(), 2) / ccpphOld) ), 15, -1 );
 				System.out.println("OH: " + ccppOh);
 				
-				ccppFh = Math.round(( (calcTotalAlk() - 2 * ccppco3 - ccpphco3 - ccppOh + ccpphOld + 2 * ccppCa) )*10000000000000000d)/10000000000000000d;
+				ccppFh = sigDigRounder(( (calcTotalAlk() - 2 * ccppco3 - ccpphco3 - ccppOh + ccpphOld + 2 * ccppCa) ), 15, -1);
 				System.out.println("Fh: " + (ccppFh));
 
-				ccppdhco3dh = Math.round(( ((-calcKw() / Math.pow(calcGamma1(), 2) / Math.pow(ccpphOld, 2) - 1)
+				ccppdhco3dh = sigDigRounder( ((-calcKw() / Math.pow(calcGamma1(), 2) / Math.pow(ccpphOld, 2) - 1)
 						* (1 + 2 * Math.pow(calcGamma1(), 2) * ccpphOld / calcK1())
 						- (2 * Math.pow(calcGamma1(), 2) / calcK1())
-								* (calcTotalAcidity() + calcKw() / Math.pow(calcGamma1(), 2) / ccpphOld - ccpphOld))
-						/ Math.pow((1 + 2 * Math.pow(calcGamma1(), 2) / calcK1() * ccpphOld), 2) )*100d)/100d;
+						* (calcTotalAcidity() + calcKw() / Math.pow(calcGamma1(), 2) / ccpphOld - ccpphOld))
+						/ Math.pow((1 + 2 * Math.pow(calcGamma1(), 2) / calcK1() * ccpphOld), 2), 15, -1 );
 				System.out.println("dHCO3dH: " + (ccppdhco3dh));
 
-				ccppdco3dh = Math.round(( (calcK2() / calcGamma2() * (ccppdhco3dh * ccpphOld - ccpphco3) / Math.pow(ccpphOld, 2)) )*100d)/100d;
+				ccppdco3dh = sigDigRounder(( (calcK2() / calcGamma2() * (ccppdhco3dh * ccpphOld - ccpphco3) / Math.pow(ccpphOld, 2)) ), 15, -1 );
 				System.out.println("dCO3dH: " + (ccppdco3dh));
 
-				ccppdcadh = Math.round(( calcKso() / Math.pow(calcGamma2(), 2) * (-ccppdco3dh) / Math.pow(ccppco3, 2) )*100d)/100d;
+				ccppdcadh = sigDigRounder(( calcKso() / Math.pow(calcGamma2(), 2) * (-ccppdco3dh) / Math.pow(ccppco3, 2) ), 15, -1 );
 				System.out.println("dCadH: " + (ccppdcadh));
 
-				ccppdohdh = Math.round((-calcKw() / Math.pow(calcGamma1(), 2) / Math.pow(ccpphOld, 2) )*100d)/100d;
+				ccppdohdh = sigDigRounder((-calcKw() / Math.pow(calcGamma1(), 2) / Math.pow(ccpphOld, 2) ), 15, -1 );
 				System.out.println("dOHdH: " + ccppdohdh);
 
-				ccppdfdh = Math.round((-2 * ccppdco3dh - ccppdhco3dh - ccppdohdh + 1 + 2 * ccppdcadh )*1000d)/1000d;
+				ccppdfdh = sigDigRounder((-2 * ccppdco3dh - ccppdhco3dh - ccppdohdh + 1 + 2 * ccppdcadh ), 15, -1 );
 				System.out.println("dFdH: " + (ccppdfdh));
 
 				if (ccpphOld - ccppFh / ccppdfdh < 0) {
-					ccppHnew = Math.round((ccpphOld / 10 )*10000000000000d)/10000000000000d;
+					ccppHnew = sigDigRounder((ccpphOld / 10 ), 15, -1 );
 				} else {
-					ccppHnew = Math.round((ccpphOld - ccppFh / ccppdfdh )*10000000000000d)/10000000000000d;
+					ccppHnew = sigDigRounder((ccpphOld - ccppFh / ccppdfdh ), 15, -1 );
 				}
 				System.out.println("Hnew: " + ccppHnew);
 				System.out.println("First Round Complete");
 			} else {
 
-				ccpppH = Math.round(( (-Math.log10(ccppHnew * calcGamma1())) )*100000d)/100000d;
+				ccpppH = sigDigRounder(( (-Math.log10(ccppHnew * calcGamma1())) ), 15, -1);
 
-				ccpphOld = Math.round(((Math.pow(10, -ccpppH) / calcGamma1()) )*100000000000d)/100000000000d;
-				ccpphco3 = Math.round(( (calcTotalAcidity() + calcKw() / Math.pow(calcGamma1(), 2) / ccpphOld
-						- ccpphOld / (1 + Math.pow(2, Math.pow(calcGamma1(), 2) / calcK1() * ccpphOld))) )*10000d)/10000d;
-				ccppco3 = Math.round(( (calcK2() / calcGamma2()) * (ccpphco3 / ccpphOld) )*10000000d)/10000000d;
+				ccpphOld = sigDigRounder(((Math.pow(10, -ccpppH) / calcGamma1()) ), 15, -1);
+
+				ccpphco3 = sigDigRounder((calcTotalAcidity() + calcKw() / Math.pow(calcGamma1(), 2) / ccpphOld
+						- ccpphOld / (1 + Math.pow(2, Math.pow(calcGamma1(), 2) / calcK1() * ccpphOld))), 15, -1);
+					
+				ccppco3 = sigDigRounder((calcK2() / calcGamma2()) * (ccpphco3 / ccpphOld), 15, -1);
 				
 				//close 
-				ccppCa = Math.round(( (calcKso() / Math.pow(calcGamma2(), 2) / ccppco3) )*100000d)/100000d;
+				ccppCa = sigDigRounder(( (calcKso() / Math.pow(calcGamma2(), 2) / ccppco3) ), 15, -1 );
 
-				//$C$22/$C$18^2/K12
-				ccppOh = Math.round(( (calcKw() / Math.pow(calcGamma1(), 2) / ccpphOld) )*1000000000d)/1000000000d;
-
+				ccppOh = sigDigRounder( ( (calcKw() / Math.pow(calcGamma1(), 2) / ccpphOld) ), 15, -1 );
 				
-				ccppFh = Math.round(( (calcTotalAlk() - 2 * ccppco3 - ccpphco3 - ccppOh + ccpphOld + 2 * ccppCa) )*10000000000000000d)/10000000000000000d;
-				ccppdhco3dh = Math.round(( ((-calcKw() / Math.pow(calcGamma1(), 2) / Math.pow(ccpphOld, 2) - 1)
+				ccppFh = sigDigRounder(( (calcTotalAlk() - 2 * ccppco3 - ccpphco3 - ccppOh + ccpphOld + 2 * ccppCa) ), 15, -1);
+
+				ccppdhco3dh = sigDigRounder( ((-calcKw() / Math.pow(calcGamma1(), 2) / Math.pow(ccpphOld, 2) - 1)
 						* (1 + 2 * Math.pow(calcGamma1(), 2) * ccpphOld / calcK1())
 						- (2 * Math.pow(calcGamma1(), 2) / calcK1())
-								* (calcTotalAcidity() + calcKw() / Math.pow(calcGamma1(), 2) / ccpphOld - ccpphOld))
-						/ Math.pow((1 + 2 * Math.pow(calcGamma1(), 2) / calcK1() * ccpphOld), 2) )*100d)/100d;
+						* (calcTotalAcidity() + calcKw() / Math.pow(calcGamma1(), 2) / ccpphOld - ccpphOld))
+						/ Math.pow((1 + 2 * Math.pow(calcGamma1(), 2) / calcK1() * ccpphOld), 2), 15, -1 );
+				
 
-				ccppdco3dh = Math.round(( (calcK2() / calcGamma2() * (ccppdhco3dh * ccpphOld - ccpphco3) / Math.pow(ccpphOld, 2)) )*100d)/100d;
-				ccppdcadh = Math.round(( calcKso() / Math.pow(calcGamma2(), 2) * (-ccppdco3dh) / Math.pow(ccppco3, 2) )*100d)/100d;
+				ccppdco3dh = sigDigRounder(( (calcK2() / calcGamma2() * (ccppdhco3dh * ccpphOld - ccpphco3) / Math.pow(ccpphOld, 2)) ), 15, -1 );
+				
 
-				//-$C$22/$C$18^2/K12^2
-				ccppdohdh = Math.round((-calcKw() / Math.pow(calcGamma1(), 2) / Math.pow(ccpphOld, 2) )*100d)/100d;
-				ccppdfdh = Math.round((-2 * ccppdco3dh - ccppdhco3dh - ccppdohdh + 1 + 2 * ccppdcadh )*1000d)/1000d;
+				ccppdcadh = sigDigRounder(( calcKso() / Math.pow(calcGamma2(), 2) * (-ccppdco3dh) / Math.pow(ccppco3, 2) ), 15, -1 );
+				
+
+				ccppdohdh = sigDigRounder((-calcKw() / Math.pow(calcGamma1(), 2) / Math.pow(ccpphOld, 2) ), 15, -1 );
+				
+
+				ccppdfdh = sigDigRounder((-2 * ccppdco3dh - ccppdhco3dh - ccppdohdh + 1 + 2 * ccppdcadh ), 15, -1 );
+				
+
 				if (ccpphOld - ccppFh / ccppdfdh < 0) {
-					ccppHnew = Math.round((ccpphOld / 10 )*10000000000000d)/10000000000000d;
+					ccppHnew = sigDigRounder((ccpphOld / 10 ), 15, -1 );
 				} else {
-					ccppHnew = Math.round((ccpphOld - ccppFh / ccppdfdh )*10000000000000d)/10000000000000d;
+					ccppHnew = sigDigRounder((ccpphOld - ccppFh / ccppdfdh ), 15, -1 );
 				}
 			}
 		}
@@ -164,6 +168,7 @@ public class LSICCPPCalc {
 		System.out.println("dohdh: " + ccppdohdh);
 		System.out.println("dfdh: " + ccppdfdh);
 		System.out.println("hnew: " + ccppHnew);
+		System.out.println("-------------------------------------");
 		return ccppCa;
 	}
 
@@ -172,17 +177,6 @@ public class LSICCPPCalc {
 	// System.out.println("Starting Master");
 
 	// }
-
-	public static double CCPPHnew(double hOld, double fh, double dfdh) {
-		// FORM: IF((K12-P12/U12)<0,K12/10,K12-P12/U12)
-		double x;
-		if (hOld - fh / dfdh < 0) {
-			x = hOld / 10;
-		} else {
-			x = (hOld - fh) / (dfdh);
-		}
-		return x;
-	}
 
 	// CCPP CALCULATION FORMULAS
 	// what if i just jammed this all into one giant method.
@@ -194,147 +188,158 @@ public class LSICCPPCalc {
 
 	// The guts of the late GetFormula method will go here.
 	public static double calcI() {
-		return Math.round(GetTDS() * 0.000025f * 10000d) / 10000d;
-	}
+		//should be 0.0091
+        return sigDigRounder(GetTDS() * 0.000025, 15, -1);
+    }
 
 	public static double calcE() {
-		return Math.round((60954.0 / (GetTemp() + 273.15 + 116.0) - 68.937) *100d ) / 100d;
+		//should be 83.7725077038707
+		return sigDigRounder((60954.0 / (GetTemp() + 273.15 + 116.0) - 68.937), 15, -1 );
 	}
 
 	public static double calcA() {
-		return Math.round( ( 1820000 * Math.pow((calcE() * (GetTemp() + 273.15)), (-1.5) ) ) * 1000000000d ) /1000000000d; // C14
+		//should be 0.498189150027024
+		return sigDigRounder((1820000 * Math.pow((calcE() * (GetTemp() + 273.15)), (-1.5) ) ), 15, -1); // C14
 	}
 
 	public static double calcLogGamma1() {
-		//-1*C14*1^2*(SQRT(C12)/(1+SQRT(C12))-0.3*C12)
-		return Math.round((-1.0 * calcA() * Math.pow(1, 2) * (Math.sqrt(calcI()) / (1 + Math.sqrt(calcI())) - 0.3 * calcI()))* 1000000000d)/1000000000d;
+		//should be -0.0420254464238279
+		return sigDigRounder((-1.0 * calcA() * Math.pow(1, 2) 
+		* (Math.sqrt(calcI()) / (1 + Math.sqrt(calcI())) - 0.3 * calcI())), 15, -1);
 	}
 
 	public static double calcLogGamma2() {
-		return Math.round((-1.0f * calcA() * Math.pow(2f, 2f) * (Math.sqrt(calcI()) / (1f + Math.sqrt(calcI())) - 0.3f * calcI()))*1000000000d)/1000000000d;
+		//should be -0.168101785695312
+
+		//-1*C14*2^2*(SQRT(C12)/(1+SQRT(C12))-0.3*C12)
+		return sigDigRounder( -1.0 * calcA() * Math.pow(2, 2) 
+		* (Math.sqrt(calcI()) / (1 + Math.sqrt(calcI())) - 0.3 * calcI()), 15, -1 );
 	}
 
 	public static double calcGamma1() {
-		return Math.round(Math.pow(10, calcLogGamma1()) * 10000d) / 10000d;
+		//should be 0.907767340211057
+		return sigDigRounder(Math.pow(10, calcLogGamma1()), 15, -1);
 	}
 
 	public static double calcGamma2() {
-		return Math.round((Math.pow(10, calcLogGamma2()))*10000d)/10000d;
+		//should be 0.679044466161855
+		return sigDigRounder((Math.pow(10, calcLogGamma2())), 15, 1);
 	}
 
 	public static double calcK1() {
-		return Math.round((Math.pow(10, (-1 * (356.309 - 21834.4 / (273 + GetTemp()) - 126.834 * Math.log10(273 + GetTemp())
-				+ 0.06092 * (273 + GetTemp()) + 1684915 / Math.pow((273 + GetTemp()), 2)))))*1000000000d)/1000000000d;
+		return sigDigRounder((Math.pow(10, (-1 * (356.309 - 21834.4 / (273 + GetTemp()) - 126.834 * Math.log10(273 + GetTemp())
+				+ 0.06092 * (273 + GetTemp()) + 1684915 / Math.pow((273 + GetTemp()), 2))))), 15, -1 );
 	}
 
 	public static double calcK2() {
-		return Math.round((Math.pow(10, (-1 * (107.887 - 5151.8 / (273 + GetTemp()) - 38.926 * Math.log10(273 + GetTemp())
-				+ 0.032528 * (273 + GetTemp()) + 563713.9 / Math.pow(273 + GetTemp(), 2)))))*10000000000000d)/10000000000000d;
+		return sigDigRounder((Math.pow(10, (-1 * (107.887 - 5151.8 / (273 + GetTemp()) - 38.926 * Math.log10(273 + GetTemp())
+				+ 0.032528 * (273 + GetTemp()) + 563713.9 / Math.pow(273 + GetTemp(), 2))))), 15, -1 );
 	}
 
 	public static double calcKw() {
-		return Math.round((Math.pow(10, (-1f * (-6.088 + 4471 / (273 + GetTemp()) + 0.01706 * (273 + GetTemp())))))*100000000000000000d)/100000000000000000d; // C22
+		return sigDigRounder((Math.pow(10, (-1 * (-6.088 + 4471 
+		/ (273 + GetTemp()) + 0.01706 * (273 + GetTemp()))))), 16, 1); // C22
 	}
 
 	public static double calcKso() {
-		return Math.round((Math.pow(10, (-1f * (171.9065 + 0.077993 * (GetTemp() + 273f) - 2839.319 / (GetTemp() + 273f)
-				- 71.595 * Math.log10((GetTemp() + 273f))))) )*100000000000d)/100000000000d; // C23
+		return sigDigRounder((Math.pow(10, (-1f * (171.9065 + 0.077993 * (GetTemp() + 273f) - 2839.319 / (GetTemp() + 273f)
+				- 71.595 * Math.log10((GetTemp() + 273f))))) ), 15, -1 ); // C23
 	}
 
 	public static double calcpK1() {
-		return Math.round((-Math.log10(calcK1()) )*100d)/100d;
+		return sigDigRounder((-Math.log10(calcK1()) ), 15, -1);
 	}
 
 	public static double calcpK2() {
-		return Math.round((-Math.log10(calcK2()) )*100d)/100d;
+		return sigDigRounder((-Math.log10(calcK2()) ), 15, -1 );
 	}
 
 	public static double calcpKw() {
-		return Math.round((-Math.log10(calcKw()) )*100d)/100d;
+		return sigDigRounder((-Math.log10(calcKw()) ), 15, -1 );
 	}
 
 	public static double calcpKso() {
-		return Math.round((-Math.log10(calcKso()) )*100d)/100d;
+		return sigDigRounder((-Math.log10(calcKso()) ), 15, -1 );
 	}
 
 	public static double calcHpositive() {
-		return Math.round((Math.pow(10, pH * -1) / calcGamma1() )*10000000000000d)/10000000000000d;
+		return sigDigRounder((Math.pow(10, pH * -1.0) / calcGamma1() ), 15, -1);
 	}
 
 	public static double calcOHnegative() {
-		return Math.round((calcKw() / calcHpositive() / Math.pow(calcGamma1(), 2) )*1000000000000d)/1000000000000d;
+		return sigDigRounder((calcKw() / calcHpositive() / Math.pow(calcGamma1(), 2) ), 15, -1);
 	}
 
 	public static double calcCtCO3() {
 		// SUM(C33:C35)
-		return Math.round(((calcH2CO3() + calcHCO3() + calcCO32negative()) )*10000000d)/10000000d;
+		return sigDigRounder(((calcH2CO3() + calcHCO3() + calcCO32negative()) ), 15, -1 );
 	}
 
 	public static double calcH2CO3() {
-		return Math.round((Math.pow(calcGamma1(), 2) * calcHpositive() / calcK1()
+		return sigDigRounder((Math.pow(calcGamma1(), 2) * calcHpositive() / calcK1()
 				* (GetAlkalinity() / 50000.0 - calcKw() / Math.pow(calcGamma1(), 2) / calcHpositive() + calcHpositive())
-				/ (1.0 + 2.0 * calcK2() / calcGamma2() / calcHpositive()) )*10000000d)/10000000d;
+				/ (1.0 + 2.0 * calcK2() / calcGamma2() / calcHpositive()) ), 15, -1 );
 	}
 
 	public static double calcHCO3() {
 		// (GetAlkalinity()/50000-calcKw()/Math.pow(calcGamma1(),
 		// 2)/calcHpositive()+calcHpositive())/(1+2*calcK2/calcGamma2()/calcHpositive());
-		return Math.round(((GetAlkalinity() / 50000 - calcKw() / Math.pow(calcGamma1(), 2) / calcHpositive() + calcHpositive())
-				/ (1 + 2 * calcK2() / calcGamma2() / calcHpositive()) )*10000000d)/10000000d;
+		return sigDigRounder(((GetAlkalinity() / 50000 - calcKw() / Math.pow(calcGamma1(), 2) / calcHpositive() + calcHpositive())
+				/ (1 + 2 * calcK2() / calcGamma2() / calcHpositive()) ), 15, -1 );
 	}
 
 	public static double calcCO32negative() {
-		return Math.round((calcK2() / calcGamma2() / calcHpositive()
+		return sigDigRounder((calcK2() / calcGamma2() / calcHpositive()
 				* (alkalinity / 50000 - calcKw() / Math.pow(calcGamma1(), 2) / calcHpositive() + calcHpositive())
-				/ (1 + 2 * calcK2() / calcGamma2() / calcHpositive()) )*1000000000d)/1000000000d;
+				/ (1 + 2 * calcK2() / calcGamma2() / calcHpositive()) ), 15, -1 );
 	}
 
 	public static double calcTotalAcidity() {
-		 return Math.round(( 2 * calcH2CO3() + calcHCO3() + calcHpositive() - calcKw() / calcHpositive() / Math.pow(calcGamma1(), 2) )*10000000d)/10000000d;
+		 return sigDigRounder(( 2 * calcH2CO3() + calcHCO3() + calcHpositive() - calcKw() / calcHpositive() / Math.pow(calcGamma1(), 2) ), 15, -1 );
 	}
 
 	public static double calcTotalAlk() {
-		return alkalinity / 50000 - (2 * calcCalcium / 100000);
+		return sigDigRounder(alkalinity / 50000 - (2 * calcCalcium / 100000), 15, -1 );
 	}
 
 	public static double calcAlpha0() {
-		return Math.round((calcHpositive() / (calcHpositive() + calcK1()) )*10000d)/10000d;
+		return sigDigRounder((calcHpositive() / (calcHpositive() + calcK1()) ), 15, -1 );
 	}
 
 	public static double calcAlpha1() {
-		return 1f - calcAlpha0();
+		return sigDigRounder(( 1 - calcAlpha0() ), 15, -1 );
 	}
 
 	public static double calcAlpha2() {
-		return Math.round((1f - calcHpositive() / (calcHpositive() + calcK2()) )*100000d)/100000d;
+		return sigDigRounder((1 - calcHpositive() / (calcHpositive() + calcK2()) ), 15, -1 );
 	}
 
 	public static double calcAlkalinityCheck() {
-		return Math.round(( 50000f * (calcHCO3() + 2f * calcCO32negative() + calcOHnegative() - calcHpositive()) )*1000d)/1000d;
+		return sigDigRounder(( 50000 * (calcHCO3() + 2 * calcCO32negative() + calcOHnegative() - calcHpositive()) ), 15, -1 );
 	}
 
 	public static double calcSaturationRatio() {
-		return Math.round(((Math.pow(calcGamma2(), 2.0) * calcCalcium / 2.5) / 40000.0 * (calcCO32negative() / calcKso()) )*100d)/100d;
+		return sigDigRounder(((Math.pow(calcGamma2(), 2.0) * calcCalcium / 2.5) / 40000.0 * (calcCO32negative() / calcKso()) ), 15, 0 );
 	}
 
 	public static double calcLSI() {
-		return Math.log(calcSaturationRatio());
+		return sigDigRounder((Math.log10(calcSaturationRatio())), 15, -1 );
 	}
 
 	public static double calcpHs() {
-		return pH - calcLSI();
+		return sigDigRounder((GetPh() - calcLSI()), 15, -1 );
 	}
 
 	public static double calcAI() {
-		return pH + Math.log(calcCalcium * tds);
+		return sigDigRounder( (GetPh() + Math.log10(GetCalcCalcium() * GetTDS())), 15, -1 );
 	}
 
 	public static double calcRI() {
-		return 2 * calcpHs() - pH;
+		return sigDigRounder( (2 * calcpHs() - pH), 15, -1 );
 	}
 
 	public static double calcCCPP() {
-		return GetCalcCalcium()-100000*ccppCa;
+		return sigDigRounder((GetCalcCalcium()-100000*ccppCa), 15, -1 );
 	}
 
 	/*
@@ -461,8 +466,23 @@ public class LSICCPPCalc {
 		System.out.println("calcAlpha0: " + calcAlpha0());
 		System.out.println("calcAlpha1: " + calcAlpha1());
 		System.out.println("calcAlpha2: " + calcAlpha2());
+		System.out.println("calcLSI: " + calcLSI());
+		System.out.println("calcpHs: " + calcpHs());
 		System.out.println("calcAlkalinityCheck: " + calcAlkalinityCheck());
 		System.out.println("calcSaturationRatio: " + calcSaturationRatio());
 		System.out.println("------------------------------------------------------------\nPRINTING COMPLETE");
 	}
+	public static double sigDigRounder(double value, int nSigDig, int dir) {
+
+        double intermediate = value/Math.pow(10,Math.floor(Math.log10(Math.abs(value)))-(nSigDig-1));
+
+        if(dir > 0)      intermediate = Math.ceil(intermediate);
+        else if (dir< 0) intermediate = Math.floor(intermediate);
+        else             intermediate = Math.round(intermediate);
+
+        double result = intermediate * Math.pow(10,Math.floor(Math.log10(Math.abs(value)))-(nSigDig-1));
+
+        return result;
+
+    }
 }
