@@ -1,4 +1,4 @@
-package com.example.will.acidbasemodel;
+package com.capstone.will.waterqualitymodel;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

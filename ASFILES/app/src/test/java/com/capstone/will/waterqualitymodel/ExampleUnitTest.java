@@ -1,4 +1,4 @@
-package com.example.will.acidbasemodel;
+package com.capstone.will.waterqualitymodel;
 
 import org.junit.Test;
 

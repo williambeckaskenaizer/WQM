@@ -1,4 +1,4 @@
-package com.example.will.acidbasemodel;
+package com.capstone.will.waterqualitymodel;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -123,18 +122,7 @@ public class LSICCPPResults extends AppCompatActivity {
         int numSigDig = 2;
         int numDir = 0;
 
-        //ListView resList = (ListView)findViewById(R.id.complexCCPPValues);
-
-
         if(complex == 0) {
-//            TextView saturationIndexT = findViewById(R.id.saturationIndex);
-//            TextView CCPPoutT = findViewById(R.id.CCPPout);
-//            TextView aggressiveIndexT = findViewById(R.id.aggressiveIndex);
-//            TextView ryznarIndexT = findViewById(R.id.ryznarIndex);
-//            TextView dissolvedOrganicCarbonT = findViewById(R.id.dissolvedOrganicCarbon);
-
-
-
 
             String saturationIndexS = "Saturation Index:  " + (Double.toString(sigDigRounder(calcLSI(), numSigDig, numDir)));
             vals_list.add(saturationIndexS);
@@ -146,15 +134,6 @@ public class LSICCPPResults extends AppCompatActivity {
             vals_list.add(ryznarIndexS);
             String dissolvedOrganicCarbonS = "Dissolved Organic Carbon:  " + Double.toString((sigDigRounder(((calcCtCO3() * 12 * 1000)), numSigDig, numDir)));
             vals_list.add(dissolvedOrganicCarbonS);
-
-
-
-
-//            saturationIndexT.setText(saturationIndexS);
-//            CCPPoutT.setText(CCPPoutS);
-//            aggressiveIndexT.setText(aggressiveIndexS);
-//            ryznarIndexT.setText(ryznarIndexS);
-//            dissolvedOrganicCarbonT.setText(dissolvedOrganicCarbonS);
         }else{
             String saturationIndexS = "Saturation Index:  " + (Double.toString(sigDigRounder(calcLSI(), numSigDig, numDir)));
             vals_list.add(saturationIndexS);
@@ -382,8 +361,6 @@ public class LSICCPPResults extends AppCompatActivity {
     }
 
     public static double calcHCO3() {
-        // (GetAlkalinity()/50000-calcKw()/Math.pow(calcGamma1(),
-        // 2)/calcHpositive()+calcHpositive())/(1+2*calcK2/calcGamma2()/calcHpositive());
         return sigDigRounder(((GetAlkalinity() / 50000 - calcKw() / Math.pow(calcGamma1(), 2) / calcHpositive() + calcHpositive())
                 / (1 + 2 * calcK2() / calcGamma2() / calcHpositive()) ), 15, -1 );
     }
