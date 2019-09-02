@@ -1,4 +1,4 @@
-package com.example.will.acidbasemodel;
+package com.capstone.will.waterqualitymodel;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,10 +17,7 @@ public class acidbase extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_acidbase);
-        if (getIntent().getBooleanExtra("EXIT", false))
-        {
-            finish();
-        }
+        if (getIntent().getBooleanExtra("EXIT", false)) { finish(); }
 
         View view = findViewById(R.id.acidbase);
         Context context = this.getApplicationContext();
