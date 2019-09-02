@@ -10,7 +10,7 @@ It aims to add portability to two water chemistry models, previously only availa
 The LSICCPP allows the user to calculate expected Langlier Saturation Index/calcium carbonate precipitation given data entered from a sample of water.
 Once Data is entered and Calculate is pressed, the results will appear, as on the right.
 
-![LSICCPP Entry](https://github.com/williambeckaskenaizer/WQM/blob/master/images/ccpp-entry.PNG) ![LSICCPP Results](https://github.com/williambeckaskenaizer/WQM/blob/master/images/ccpp-entry.PNG)
+![LSICCPP Entry](https://github.com/williambeckaskenaizer/WQM/blob/master/images/ccpp-entry.PNG) ![LSICCPP Results](https://github.com/williambeckaskenaizer/WQM/blob/master/images/ccpp-results.PNG)
 
 If the user ticked the Detailed Calculations box, the results will appear as follows:
 
